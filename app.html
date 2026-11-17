@@ -1240,6 +1240,14 @@
         "Pharmacy": '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 11v6M9 14h6"/></svg>',
         "Cashier": '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg>'
       };
+      // Single-submenu menus navigate directly; multi-submenu menus open a dropdown
+      if (m.subs.length === 1) {
+        main.innerHTML = (ICONS[m.label] || "") + m.label;
+        main.addEventListener("click", () => showView(m.subs[0].id));
+        item.append(main);
+        nav.appendChild(item);
+        return;
+      }
       main.innerHTML = (ICONS[m.label] || "") + m.label + ' <span class="caret">▾</span>';
       main.setAttribute("aria-haspopup", "true");
       main.setAttribute("aria-expanded", "false");
