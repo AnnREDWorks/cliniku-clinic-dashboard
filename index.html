@@ -3,1992 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>clinicKU — Run Your Entire Clinic From One Screen | The Savior Malaysia</title>
+<meta name="description" content="clinicKU is the all-in-one clinic dashboard for Malaysian clinics: patient queue, doctor consultation, QR pharmacy dispensing, cashier billing and medical certificates — in one page, in any browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-<title>the savior — Clinic Dashboard and Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --dark-blue: #0000FF;
-    --dark-blue-2: #0000CC;
-    --mid-blue: #0000FF;
-    --light-blue: #e6ebff;
-    --white: #ffffff;
-    --text: #3a3f47;
-    --muted: #6b7a93;
-    --green: #1a7f4f;
-    --amber: #b0700f;
-    --wa: #128c7e;
-    --card: #ffffff;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
-    background: #ffffff;
-    color: var(--text);
-    min-height: 100vh;
-  }
+  :root { --blue: #0000FF; --blue-2: #0000CC; --ink: #3a3f47; --muted: #6b7280; --soft: #e6ebff; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family:"Montserrat",Arial,sans-serif; color:var(--ink); background:#fff; }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 24px; }
+  svg.ic { fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 
-  /* ---- Floating curvy header ---- */
-  .topbar {
-    position: sticky;
-    top: 14px;
-    z-index: 40;
-    max-width: 1080px;
-    margin: 14px auto 0;
-    padding: 0 16px;
-  }
-  .topbar-inner {
-    background: #ffffff;
-    border: 1px solid #eef1f6;
-    border-radius: 28px;
-    box-shadow: 0 8px 26px rgba(0, 0, 255, 0.16);
-    padding: 7px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: nowrap;
-  }
-  .brand { display: flex; align-items: center; gap: 8px; margin-right: auto; flex: none; }
-  .brand-name {
-    font-size: 16px;
-    letter-spacing: 3px;
-    font-weight: 700;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: #3a3f47;
-    font-family: "Playfair Display", Didot, "Bodoni MT", Georgia, serif;
-  }
-  .brand-mark {
-    display: inline-flex;
-    width: 26px; height: 26px;
-    border-radius: 9px;
-    background: linear-gradient(135deg, #0000FF, #4d4dff);
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 10px rgba(0, 0, 255, 0.30);
-  }
-  .brand-mark svg { width: 14px; height: 14px; fill: none; stroke: #ffffff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .brand .tagline { display: none; }
+  /* Nav */
+  nav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,0.9); backdrop-filter:blur(8px); border-bottom:1px solid #eef1f6; }
+  .nav-in { display:flex; align-items:center; gap:12px; height:60px; }
+  .mark { width:32px; height:32px; border-radius:10px; background:linear-gradient(135deg,var(--blue),#4d4dff); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,255,0.3); }
+  .mark svg { width:18px; height:18px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .brand { font-family:"Playfair Display",Georgia,serif; font-size:20px; letter-spacing:3px; font-weight:800; color:var(--ink); }
+  .brand span { color:var(--blue); }
+  .nav-links { margin-left:auto; display:flex; gap:6px; }
+  .nav-links a { color:var(--ink); text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 14px; border-radius:999px; }
+  .nav-links a:hover { background:var(--soft); }
+  .nav-cta { background:var(--blue) !important; color:#fff !important; box-shadow:0 4px 14px rgba(0,0,255,0.3); }
 
-  /* Main menu + submenu */
-  nav.menu { display: flex; gap: 2px; flex-wrap: nowrap; }
-  .menu-item { position: relative; }
-  .menu-main {
-    background: none;
-    border: none;
-    font-family: inherit;
-    color: #3a3f47;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 6px 10px;
-    border-radius: 999px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-  }
-  .menu-main svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .menu-main:hover, .menu-item.open .menu-main, .menu-item.active .menu-main { background: var(--light-blue); }
-  .menu-main .caret { font-size: 9px; margin-left: 1px; }
-  .submenu {
-    display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    background: var(--white);
-    border-radius: 14px;
-    box-shadow: 0 10px 28px rgba(0, 0, 255, 0.22);
-    padding: 8px;
-    min-width: 180px;
-    z-index: 50;
-  }
-  .menu-item.open .submenu { display: block; }
-  .submenu button {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
-    font-family: inherit;
-    font-size: 13px;
-    color: var(--text);
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  .submenu button:hover { background: var(--light-blue); }
-  .submenu button.active { background: var(--light-blue); color: #0000FF; font-weight: 600; }
-  .date-chip {
-    background: var(--dark-blue);
-    color: var(--white);
-    font-size: 10.5px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    white-space: nowrap;
-    flex: none;
-  }
-  .user-chip {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: var(--white);
-    border: 1px solid #c9d5ec;
-    border-radius: 999px;
-    padding: 3px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: padding 0.18s ease;
-    flex: none;
-  }
-  .user-chip .u-text {
-    max-width: 0;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: max-width 0.22s ease, padding-right 0.18s ease;
-  }
-  .user-chip:hover { padding-right: 14px; background: var(--light-blue); }
-  .user-chip:hover .u-text { max-width: 220px; padding-right: 4px; }
-  .user-avatar {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: var(--dark-blue);
-    color: var(--white);
-    font-size: 10px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .user-chip .u-name { font-size: 13px; font-weight: 600; color: #3a3f47; line-height: 1.1; text-align: left; display: block; }
-  .user-chip .u-role { font-size: 11px; color: var(--muted); line-height: 1.1; text-align: left; display: block; }
+  /* Hero */
+  .hero { padding:72px 0 60px; text-align:center; }
+  .pill { display:inline-flex; align-items:center; gap:8px; background:var(--soft); color:var(--blue); font-size:13px; font-weight:700; padding:7px 16px; border-radius:999px; letter-spacing:0.5px; }
+  .pill svg { width:14px; height:14px; }
+  h1 { font-size:46px; line-height:1.15; font-weight:800; margin:22px auto 0; max-width:900px; }
+  h1 em { font-style:normal; color:var(--blue); }
+  .hero p.lead { font-size:18px; color:var(--muted); max-width:760px; margin:18px auto 0; line-height:1.6; }
+  .hero-cta { margin-top:30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn { display:inline-flex; align-items:center; gap:9px; padding:14px 30px; border-radius:12px; font-size:15.5px; font-weight:700; text-decoration:none; }
+  .btn svg { width:17px; height:17px; }
+  .btn-primary { background:var(--blue); color:#fff; box-shadow:0 8px 22px rgba(0,0,255,0.35); }
+  .btn-primary:hover { background:var(--blue-2); }
+  .btn-ghost { background:#fff; color:var(--blue); border:2px solid var(--blue); }
+  .btn-ghost:hover { background:var(--soft); }
+  .hero-note { margin-top:14px; font-size:13px; color:var(--muted); }
+  .hero-shot { max-width:980px; margin:44px auto 0; border-radius:18px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,255,0.18); border:1px solid #e3e8f2; }
+  .hero-shot img { width:100%; display:block; }
 
-  main { max-width: 1080px; margin: 0 auto; padding: 22px 16px 48px; }
-  section {
-    background: var(--card);
-    border-radius: 22px;
-    box-shadow: 0 4px 18px rgba(0, 0, 255, 0.10);
-    padding: 22px 26px;
-    display: none;
-  }
-  section.visible { display: block; }
-  section h2 {
-    font-size: 17px;
-    color: #3a3f47;
-    margin-bottom: 4px;
-    letter-spacing: 0.5px;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-  }
-  .h2-icon {
-    display: inline-flex;
-    width: 30px; height: 30px;
-    border-radius: 10px;
-    background: var(--light-blue);
-    align-items: center;
-    justify-content: center;
-    flex: none;
-  }
-  .h2-icon svg { width: 16px; height: 16px; fill: none; stroke: #0000FF; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  section .subtitle { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  /* Logos / trust strip */
+  .strip { background:var(--blue); color:#fff; padding:16px 0; }
+  .strip-in { display:flex; justify-content:center; gap:34px; flex-wrap:wrap; font-size:13.5px; font-weight:600; }
+  .strip-in span { display:inline-flex; align-items:center; gap:8px; opacity:0.95; }
+  .strip-in svg { width:15px; height:15px; }
 
-  /* ---- Tables ---- */
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th {
-    text-align: left;
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 8px 10px;
-    border-bottom: 2px solid var(--light-blue);
-    white-space: nowrap;
-  }
-  td { padding: 10px; border-bottom: 1px solid var(--light-blue); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  .contact-line { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    background: var(--light-blue);
-    color: var(--dark-blue-2);
-    white-space: nowrap;
-  }
-  select, input, textarea {
-    padding: 9px 12px;
-    border: 1px solid #c9d5ec;
-    border-radius: 10px;
-    font-size: 14px;
-    font-family: inherit;
-    background: var(--white);
-    color: var(--text);
-  }
-  select.status, select.room {
-    padding: 6px 8px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  tr.status-waiting td:first-child { border-left: 4px solid var(--amber); }
-  tr.status-consultation td:first-child { border-left: 4px solid var(--mid-blue); }
-  tr.status-done td:first-child { border-left: 4px solid var(--green); }
-  tr.status-paid td:first-child { border-left: 4px solid #0000FF; }
-  .paid-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: var(--light-blue);
-    color: #0000FF;
-    font-weight: 700;
-    font-size: 12.5px;
-    padding: 5px 12px;
-    border-radius: 999px;
-  }
-  .paid-tag svg { width: 13px; height: 13px; fill: none; stroke: #0000FF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-  tr.status-done td.name-cell .p-name { color: var(--muted); text-decoration: line-through; }
-  .p-name { color: #3a3f47; font-weight: 600; cursor: pointer; border-bottom: 1px dashed transparent; }
-  .p-name:hover { border-bottom-color: var(--mid-blue); }
-  .med-tag { display: inline-block; margin-top: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
-  .med-tag.dispensed { background: #e2f4ea; color: var(--green); }
-  .med-tag.pending { background: #fdeee0; color: var(--amber); }
-  .med-tag.none { background: var(--light-blue); color: var(--muted); font-weight: 400; }
-  .stock-tag { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-  .stock-tag.ok { background: #e2f4ea; color: var(--green); }
-  .stock-tag.low { background: #fdeee0; color: var(--amber); }
-  .stock-tag.out { background: #fbe3e3; color: #b02a2a; }
+  /* Sections */
+  section { padding:72px 0; }
+  h2.sec { text-align:center; font-size:32px; font-weight:800; }
+  h2.sec em { font-style:normal; color:var(--blue); }
+  p.sec-sub { text-align:center; color:var(--muted); font-size:16px; margin:12px auto 0; max-width:640px; line-height:1.6; }
 
-  .actions { display: flex; gap: 6px; }
-  .act-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    white-space: nowrap;
-    color: #ffffff !important;
-  }
-  .act-btn svg { width: 13px; height: 13px; fill: none; stroke: #ffffff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .call-btn { background: var(--dark-blue); color: var(--white); }
-  .del-btn { background: #b02a2a; color: #ffffff; }
-  .edit-btn { background: var(--mid-blue); color: #ffffff; }
-  .wa-btn { background: var(--wa); color: var(--white); }
-  .no-contact { font-size: 12px; color: var(--muted); font-style: italic; }
+  .features { margin-top:44px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .feat { background:#fff; border:1px solid #eef1f6; border-radius:18px; padding:24px; box-shadow:0 6px 20px rgba(0,0,255,0.07); border-top:4px solid var(--blue); }
+  .f-ico { width:46px; height:46px; border-radius:13px; background:var(--soft); display:flex; align-items:center; justify-content:center; color:var(--blue); }
+  .f-ico svg { width:22px; height:22px; }
+  .feat h3 { font-size:16.5px; margin-top:14px; }
+  .feat p { font-size:13.5px; color:var(--muted); line-height:1.6; margin-top:7px; }
 
-  form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field label { font-size: 12px; font-weight: 600; color: #3a3f47; }
-  .field textarea { min-width: 320px; resize: vertical; }
-  input:focus, select:focus, textarea:focus { outline: 2px solid var(--mid-blue); outline-offset: 1px; }
-  .add-btn {
-    background: var(--dark-blue);
-    color: var(--white);
-    border: none;
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .add-btn:hover { background: var(--dark-blue-2); }
-  .form-msg { font-size: 13px; color: var(--amber); margin-top: 8px; min-height: 16px; }
-  .form-msg.ok { color: var(--green); }
-  .optional-tag { font-weight: 400; color: var(--muted); }
+  /* Roles */
+  .roles { margin-top:44px; display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .role { background:var(--soft); border-radius:16px; padding:20px; text-align:center; }
+  .role .r-tag { display:inline-block; background:var(--blue); color:#fff; font-size:11px; font-weight:800; letter-spacing:1px; padding:4px 12px; border-radius:999px; }
+  .role h4 { margin-top:10px; font-size:15px; }
+  .role p { font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
 
-  .count-cards { display: flex; gap: 16px; flex-wrap: wrap; }
-  .count-card {
-    flex: 1;
-    min-width: 160px;
-    background: var(--white);
-    border-radius: 16px;
-    padding: 16px 20px;
-    border-top: 4px solid var(--dark-blue);
-    box-shadow: 0 2px 8px rgba(0,0,255,0.08);
-  }
-  .count-card.waiting { border-top-color: var(--amber); }
-  .count-card.consultation { border-top-color: var(--mid-blue); }
-  .count-card.done { border-top-color: var(--green); }
-  .count-card .num { font-size: 30px; font-weight: 700; color: var(--dark-blue); }
-  .count-card .label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  /* Journey visual */
+  .journey-sec { background:#f6f8ff; }
+  .steps { margin-top:40px; display:flex; gap:0; }
+  .jstep { flex:1; text-align:center; position:relative; }
+  .jstep:not(:last-child)::after { content:""; position:absolute; top:22px; left:calc(50% + 28px); width:calc(100% - 56px); height:3px; background:#c7d2ee; border-radius:2px; }
+  .jdot { width:46px; height:46px; margin:0 auto; border-radius:50%; background:#fff; border:3px solid var(--blue); color:var(--blue); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,255,0.15); }
+  .jdot svg { width:20px; height:20px; }
+  .jstep b { display:block; margin-top:10px; font-size:13.5px; }
+  .jstep span { font-size:11.5px; color:var(--muted); }
+  .jstep:last-child .jdot { background:var(--blue); color:#fff; }
 
-  /* Pharmacy */
-  .rx-card {
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,255,0.08);
-    padding: 14px 18px;
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-  .rx-card canvas { border: 1px solid var(--light-blue); border-radius: 10px; }
-  .rx-info { flex: 1; min-width: 220px; }
-  .rx-info .rx-title { font-weight: 600; color: var(--dark-blue); }
-  .rx-info .rx-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
-  .rx-code {
-    font-family: Consolas, monospace;
-    font-size: 13px;
-    letter-spacing: 1px;
-    color: var(--dark-blue-2);
-    background: var(--light-blue);
-    padding: 4px 10px;
-    border-radius: 8px;
-    display: inline-block;
-    margin-top: 6px;
-  }
-  .scan-box {
-    margin-top: 16px;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,255,0.08);
-    padding: 14px 18px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: flex-end;
-  }
-  .scan-log { margin-top: 10px; font-size: 13px; min-height: 18px; width: 100%; }
-  .med-status-line {
-    margin: 10px 0 0;
-    font-size: 13px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: var(--light-blue);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
+  /* Testimonial */
+  .quote-card { max-width:720px; margin:40px auto 0; background:#fff; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,255,0.10); padding:30px 36px; border-left:6px solid var(--blue); }
+  .quote-card p { font-size:16.5px; line-height:1.7; }
+  .quote-card .who { margin-top:16px; font-size:13px; color:var(--muted); font-weight:600; }
 
-  /* Documents */
-  .cashier-doc {
-    background: var(--white);
-    border: 1px solid var(--light-blue);
-    border-radius: 16px;
-    padding: 18px 22px;
-    margin-top: 16px;
-  }
-  .doc-head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--dark-blue); padding-bottom: 10px; }
-  .doc-head .doc-title { font-size: 18px; font-weight: 700; color: #3a3f47; letter-spacing: 1px; }
-  .doc-head .doc-meta { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.6; }
-  .doc-meta .doc-no { font-family: Consolas, monospace; color: var(--dark-blue-2); font-weight: 700; }
-  .doc-party { font-size: 13px; margin: 10px 0; line-height: 1.6; }
-  .doc-party .k { color: var(--muted); }
-  .doc-items { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
-  .doc-items th { border-bottom: 1px solid var(--light-blue); padding: 6px 8px; }
-  .doc-items td { padding: 6px 8px; border-bottom: 1px solid var(--light-blue); }
-  .doc-items td.num, .doc-items th.num { text-align: right; }
-  .doc-total { display: flex; justify-content: flex-end; gap: 24px; font-size: 15px; font-weight: 700; color: var(--dark-blue); padding: 10px 8px 0; }
-  .doc-stamp { display: inline-block; margin-top: 12px; padding: 4px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
-  .doc-stamp.paid { background: #e2f4ea; color: var(--green); border: 1.5px solid var(--green); }
-  .doc-stamp.unpaid { background: #fdeee0; color: var(--amber); border: 1.5px solid var(--amber); }
-  .doc-note { font-size: 11px; color: var(--muted); margin-top: 10px; }
-  .mc-sign { margin-top: 14px; font-size: 13px; color: var(--dark-blue); }
-  .mc-sign .sig-line { border-bottom: 1.5px solid var(--dark-blue); display: inline-block; min-width: 220px; padding-bottom: 2px; margin-bottom: 4px; }
+  /* Pricing */
+  .price-grid { margin-top:44px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .plan { background:#fff; border:1px solid #eef1f6; border-radius:20px; padding:28px; text-align:center; }
+  .plan.hot { border:2.5px solid var(--blue); box-shadow:0 12px 34px rgba(0,0,255,0.16); position:relative; }
+  .plan .hot-tag { position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:var(--blue); color:#fff; font-size:11px; font-weight:800; letter-spacing:1px; padding:5px 14px; border-radius:999px; }
+  .plan h3 { font-size:17px; }
+  .plan .price { font-size:38px; font-weight:800; color:var(--ink); margin-top:8px; }
+  .plan .price small { font-size:13px; color:var(--muted); font-weight:600; }
+  .plan ul { list-style:none; margin-top:16px; text-align:left; }
+  .plan li { font-size:13.5px; color:var(--ink); padding:7px 0; display:flex; gap:9px; align-items:flex-start; }
+  .plan li svg { width:15px; height:15px; flex:none; margin-top:2px; color:var(--green,#1a7f4f); }
+  .plan .btn { margin-top:18px; width:100%; justify-content:center; padding:12px; }
 
-  /* Overlays */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 255, 0.45);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 60;
-  }
-  .overlay.open { display: flex; }
-  .profile-card {
-    background: var(--white);
-    border-radius: 22px;
-    max-width: 540px;
-    width: 100%;
-    max-height: 88vh;
-    overflow-y: auto;
-    box-shadow: 0 8px 30px rgba(0, 0, 255, 0.35);
-  }
-  .profile-head {
-    background: var(--dark-blue);
-    color: var(--white);
-    padding: 16px 22px;
-    border-radius: 22px 22px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .profile-head h3 { font-size: 16px; font-weight: 600; }
-  .close-btn {
-    background: rgba(255,255,255,0.15);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    padding: 5px 12px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .profile-body { padding: 18px 22px 22px; }
-  .profile-body h4 {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--mid-blue);
-    margin: 14px 0 6px;
-  }
-  .profile-body h4:first-child { margin-top: 0; }
-  .detail-line { font-size: 14px; margin: 3px 0; }
-  .detail-line .k { color: var(--muted); margin-right: 6px; }
-  .med-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 6px; }
-  .ghost-btn {
-    background: var(--white);
-    color: var(--dark-blue);
-    border: 1.5px solid var(--dark-blue);
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .ghost-btn:hover { background: var(--light-blue); }
+  /* Final CTA */
+  .final { background:linear-gradient(135deg,#0000FF,#2626ff); color:#fff; text-align:center; border-radius:24px; padding:56px 30px; box-shadow:0 16px 44px rgba(0,0,255,0.35); }
+  .final h2 { font-size:34px; font-weight:800; }
+  .final p { margin-top:12px; font-size:16px; opacity:0.92; }
+  .final .btn { margin-top:26px; background:#fff; color:var(--blue); }
 
-  /* Patient journey tracker */
-  .journey {
-    background: var(--white);
-    border: 1px solid #eef1f6;
-    border-radius: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,255,0.08);
-    padding: 16px 20px;
-    margin-bottom: 16px;
-  }
-  .journey .j-head {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-  .journey .j-head label { font-size: 12px; font-weight: 600; color: #3a3f47; }
-  .journey .j-meta { font-size: 12px; color: var(--muted); margin-left: auto; }
-  .j-steps { display: flex; align-items: flex-start; gap: 0; }
-  .j-step {
-    flex: 1;
-    text-align: center;
-    position: relative;
-    min-width: 86px;
-  }
-  .j-step:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    top: 17px;
-    left: calc(50% + 22px);
-    width: calc(100% - 44px);
-    height: 3px;
-    border-radius: 2px;
-    background: #e3e8f2;
-  }
-  .j-step.done:not(:last-child)::after { background: var(--green); }
-  .j-step.active:not(:last-child)::after { background: var(--mid-blue); }
-  .j-dot {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: #e3e8f2;
-    color: #9aa5b8;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-  }
-  .j-dot svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  .j-step.active .j-dot { background: var(--mid-blue); color: #ffffff; box-shadow: 0 0 0 5px rgba(0,0,255,0.12); }
-  .j-step.done .j-dot { background: var(--green); color: #ffffff; }
-  .j-label { font-size: 11.5px; font-weight: 600; color: #9aa5b8; margin-top: 6px; }
-  .j-step.active .j-label, .j-step.done .j-label { color: #3a3f47; }
-  .j-state { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
-  .j-step.active .j-state { color: #0000FF; font-weight: 700; }
-  .j-step.done .j-state { color: var(--green); font-weight: 600; }
+  footer { border-top:1px solid #eef1f6; padding:26px 0 34px; margin-top:60px; }
+  .foot { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:12.5px; color:var(--muted); }
+  .foot a { color:var(--blue); font-weight:600; text-decoration:none; }
 
-  /* Footer */
-  footer {
-    max-width: 1080px;
-    margin: 0 auto 20px;
-    padding: 0 16px;
+  @media (max-width: 900px) {
+    h1 { font-size:34px; }
+    .features, .price-grid { grid-template-columns:1fr 1fr; }
+    .roles { grid-template-columns:1fr 1fr; }
+    .steps { flex-wrap:wrap; gap:20px; }
+    .jstep::after { display:none; }
   }
-  .footer-inner {
-    background: var(--card);
-    border-radius: 18px;
-    box-shadow: 0 2px 10px rgba(0, 0, 255, 0.10);
-    padding: 12px 22px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    font-size: 12.5px;
-    color: #3a3f47;
+  @media (max-width: 600px) {
+    .features, .price-grid, .roles { grid-template-columns:1fr; }
+    .nav-links a:not(.nav-cta) { display:none; }
+    h1 { font-size:28px; }
   }
-  .footer-right a { color: #0000FF; font-weight: 600; text-decoration: none; }
-  .footer-right a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></span>
-      <div class="brand-name">clinicKU</div>
-      <div class="tagline">Clinic Suite</div>
+<nav>
+  <div class="wrap nav-in">
+    <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+    <div class="brand">CLINIC<span>KU</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#roles">Who it's for</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="app.html" class="nav-cta">Open the App →</a>
     </div>
-    <!--REMOVED_LOGO-->
-    <div style="display:none;">
-      <img src="data:image/png;base64,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" alt="the savior logo">
-    </div>
-    <nav class="menu" id="main-menu"></nav>
-    <div class="date-chip" id="today-date"></div>
-    <button class="user-chip" id="user-chip" aria-label="View my staff profile">
-      <span class="user-avatar" id="user-avatar">NA</span>
-      <span class="u-text">
-        <span class="u-name" id="user-name"></span>
-        <span class="u-role" id="user-role"></span>
-      </span>
-    </button>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="pill"><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> FREE DEMO · NO SIGNUP · RUNS IN ANY BROWSER</div>
+  <h1>Run your entire clinic from <em>one screen.</em></h1>
+  <p class="lead">clinicKU replaces the paper queue, WhatsApp chaos and missing receipts with one clean dashboard — patient registration, doctor consultation, QR pharmacy dispensing and cashier billing, all talking to each other in real time.</p>
+  <div class="hero-cta">
+    <a class="btn btn-primary" href="app.html"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Launch clinicKU Now</a>
+    <a class="btn btn-ghost" href="#features"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg> See What It Does</a>
+  </div>
+  <div class="hero-note">No installation · No account · Your data stays in your browser</div>
+  <div class="hero-shot"><img src="shot-patient.png" alt="clinicKU dashboard preview"></div>
+</header>
+
+<div class="strip">
+  <div class="wrap strip-in">
+    <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Patient queue &amp; CRUD</span>
+    <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Medical certificates</span>
+    <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> QR dispensing</span>
+    <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Invoices &amp; receipts</span>
+    <span><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Stock control</span>
   </div>
 </div>
 
-<main>
-  <!-- Patient (single page: register + queue + profile, full CRUD) -->
-  <section id="view-patient">
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M2 21c0-4 3.5-6.5 8-6.5 2 0 3.8.5 5.2 1.4"/><path d="M19 8v6M16 11h6"/></svg></span> Patient Management</h2>
-    <p class="subtitle">Register patients, manage today&rsquo;s queue, view profiles &mdash; add, edit and delete in one place.</p>
-
-    <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);margin:6px 0 10px;">Register / Edit Patient</h4>
-    <form id="register-form">
-      <div class="field">
-        <label for="patient-name">Patient Name</label>
-        <input type="text" id="patient-name" placeholder="e.g. Siti Aminah" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="visit-type">Visit Type</label>
-        <select id="visit-type">
-          <option>General Consultation</option>
-          <option>Follow-up</option>
-          <option>Medication Refill</option>
-          <option>Blood Test</option>
-          <option>Vaccination</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="patient-phone">Phone Number</label>
-        <input type="tel" id="patient-phone" placeholder="e.g. 012-345 6789" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="patient-email">Email <span class="optional-tag">(optional)</span></label>
-        <input type="email" id="patient-email" placeholder="e.g. siti@email.com" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="patient-address">Address <span class="optional-tag">(optional)</span></label>
-        <textarea id="patient-address" rows="2" placeholder="e.g. 12, Jalan Melati, 43000 Kajang, Selangor"></textarea>
-      </div>
-      <div class="field">
-        <button type="submit" class="add-btn" id="patient-submit">Add Patient</button>
-      </div>
-      <div class="field" id="patient-cancel-wrap" style="display:none;">
-        <button type="button" class="ghost-btn" id="patient-cancel">Cancel Edit</button>
-      </div>
-    </form>
-    <div class="form-msg" id="form-msg"></div>
-
-    <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);margin:18px 0 10px;">Today&rsquo;s Queue</h4>
-    <table>
-      <thead><tr><th>No.</th><th>Patient</th><th>Visit Type</th><th>Consultation Room</th><th>Status</th><th>Contact Patient</th><th>Actions</th></tr></thead>
-      <tbody id="queue-body"></tbody>
-    </table>
-
-    <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);margin:18px 0 10px;">Patient Profile</h4>
-    <div class="field">
-      <label for="profile-patient">Select Patient</label>
-      <select id="profile-patient" style="min-width:260px;"></select>
+<section id="features" class="wrap">
+  <h2 class="sec">Everything your clinic does, <em>finally in one place.</em></h2>
+  <p class="sec-sub">Most clinics juggle 4 different tools and 3 WhatsApp groups. clinicKU gives every role exactly one page to do their job — and everyone sees the same truth.</p>
+  <div class="features">
+    <div class="feat">
+      <div class="f-ico"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M2 21c0-4 3.5-6.5 8-6.5 2 0 3.8.5 5.2 1.4"/><path d="M19 8v6M16 11h6"/></svg></div>
+      <h3>Front Desk That Moves Fast</h3>
+      <p>Register a patient in seconds. Today's queue shows status, room and contact at a glance — with one-tap Call and WhatsApp (Malaysian numbers auto-formatted to +60) to call patients back without dialing mistakes.</p>
     </div>
-    <div id="profile-view"></div>
-  </section>
-
-  <!-- Doctor (all in one page) -->
-  <section id="view-doctor">
-    <div class="journey" data-journey>
-      <div class="j-head">
-        <label for="journey-doctor">Select Patient</label>
-        <select id="journey-doctor" data-journey-select style="min-width:240px;"></select>
-        <div class="j-meta" data-journey-meta></div>
-      </div>
-      <div class="j-steps" data-journey-steps></div>
+    <div class="feat">
+      <div class="f-ico"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <h3>Doctor Does It All On One Page</h3>
+      <p>Diagnosis, remarks, prescriptions pulled straight from live inventory, and a printable medical certificate with certificate number and rest-period dates — generated in one click.</p>
     </div>
-
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></span> Doctor &mdash; Consultation</h2>
-    <p class="subtitle">Diagnosis, prescription, remarks, medical certificate, and a summary of all consultations recorded today.</p>
-    <div class="doc-party"><strong>Patient:</strong> <select id="doctor-patient" style="min-width:260px;"></select></div>
-
-    <div class="field" style="margin-top:12px;"><label for="diag-input">Diagnosis</label>
-      <textarea id="diag-input" rows="2" placeholder="e.g. Acute pharyngitis with fever" style="min-width:420px;"></textarea></div>
-    <button type="button" class="add-btn" id="diag-save" style="margin-top:8px;">Save Diagnosis</button>
-    <div class="form-msg" id="diag-msg"></div>
-
-    <h4 style="margin-top:18px;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);">Prescription &mdash; medication supply from clinic stock</h4>
-    <form id="prescribe-form">
-      <div class="field">
-        <label for="rx-med">Medication (from inventory)</label>
-        <select id="rx-med" style="min-width:240px;"></select>
-      </div>
-      <div class="field">
-        <label for="rx-dosage">Dosage</label>
-        <input type="text" id="rx-dosage" placeholder="e.g. 3x daily after meals" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="rx-supply">Supply</label>
-        <input type="text" id="rx-supply" placeholder="e.g. 5 days / 15 capsules" autocomplete="off">
-      </div>
-      <div class="field"><button type="submit" class="add-btn">Add to Prescription</button></div>
-    </form>
-    <div class="form-msg" id="rx-msg"></div>
-    <div id="rx-list"></div>
-    <button type="button" class="add-btn" id="rx-save" style="margin-top:10px;">Save Prescription &amp; Send to Pharmacy</button>
-    <div class="form-msg" id="rx-save-msg"></div>
-
-    <h4 style="margin-top:18px;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);">Remarks</h4>
-    <div class="field"><label for="rem-input">Remarks</label>
-      <textarea id="rem-input" rows="2" placeholder="e.g. Review if fever persists beyond 3 days" style="min-width:420px;"></textarea></div>
-    <button type="button" class="add-btn" id="rem-save" style="margin-top:8px;">Save Remarks</button>
-    <div class="form-msg" id="rem-msg"></div>
-
-    <h4 style="margin-top:18px;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);">Medical Certificate</h4>
-    <form id="mc-form">
-      <div class="field"><label for="mc-days">MC Days</label><input type="number" id="mc-days" min="1" max="30" value="1" style="min-width:90px;"></div>
-      <div class="field"><button type="submit" class="add-btn">Generate MC</button></div>
-    </form>
-    <div class="form-msg" id="mc-msg"></div>
-    <div id="mc-output"></div>
-
-    <h4 style="margin-top:18px;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);">All Consultations Today</h4>
-    <div id="doctor-all-list"></div>
-  </section>
-
-  <!-- Pharmacy -->
-  <section id="view-dispensing">
-    <div class="journey" data-journey>
-      <div class="j-head">
-        <label for="journey-dispensing">Select Patient</label>
-        <select id="journey-dispensing" data-journey-select style="min-width:240px;"></select>
-        <div class="j-meta" data-journey-meta></div>
-      </div>
-      <div class="j-steps" data-journey-steps></div>
+    <div class="feat">
+      <div class="f-ico"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 11v6M9 14h6"/></svg></div>
+      <h3>Pharmacy With Proof</h3>
+      <p>Every dispensed item gets a QR code. Scan to verify — wrong item, unverified stock, or double-scanning gets caught instantly. Stock deducts itself, and low-stock warnings appear before you run out.</p>
     </div>
-
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 11v6M9 14h6"/></svg></span> Pharmacy &mdash; Dispensing</h2>
-    <p class="subtitle">Select a patient to see the medication that needs to be supplied or dispensed. Dispensing auto-updates the queue status and deducts inventory stock.</p>
-    <div class="field">
-      <label for="disp-patient">Patient</label>
-      <select id="disp-patient" style="min-width:260px;"></select>
+    <div class="feat">
+      <div class="f-ico"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg></div>
+      <h3>Cashier Closes The Loop</h3>
+      <p>See the next patient to pay with a suggested amount already calculated. Generate quotation, invoice or receipt, take payment, and the patient's status flips to a blue "✓ Paid" badge automatically.</p>
     </div>
-    <div id="disp-info" style="margin-top:12px;"></div>
-    <div id="disp-list"></div>
-    <div class="scan-box">
-      <div class="field">
-        <label for="scan-input">Scan QR / Enter Code</label>
-        <input type="text" id="scan-input" placeholder="e.g. TSV-PAR-1042" style="min-width:260px;" autocomplete="off">
-      </div>
-      <button type="button" class="add-btn" id="scan-btn">Verify Scan</button>
-      <div class="scan-log" id="scan-log"></div>
+    <div class="feat">
+      <div class="f-ico"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+      <h3>The Journey Tracker</h3>
+      <p>Registered → Diagnosis → Prescribed → Dispensed → Paid. Every Doctor, Pharmacy and Cashier page shows exactly which stage each patient is at — and what still needs to be done. No more "sapa pegang fail ni?"</p>
     </div>
-  </section>
-
-  <section id="view-inventory">
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span> Medication Inventory</h2>
-    <p class="subtitle">Add, edit or remove medication stock items. Dispensing from the pharmacy automatically deducts stock.</p>
-    <form id="inv-form">
-      <div class="field">
-        <label for="inv-name">Medication Name</label>
-        <input type="text" id="inv-name" placeholder="e.g. Ibuprofen 400mg" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="inv-type">Type</label>
-        <input type="text" id="inv-type" placeholder="e.g. Ibuprofen" autocomplete="off">
-      </div>
-      <div class="field">
-        <label for="inv-stock">Stock</label>
-        <input type="number" id="inv-stock" min="0" value="0" style="min-width:90px;">
-      </div>
-      <div class="field">
-        <label for="inv-reorder">Reorder Level</label>
-        <input type="number" id="inv-reorder" min="0" value="10" style="min-width:90px;">
-      </div>
-      <div class="field">
-        <button type="submit" class="add-btn" id="inv-submit">Add Medication</button>
-      </div>
-      <div class="field" id="inv-cancel-wrap" style="display:none;">
-        <button type="button" class="ghost-btn" id="inv-cancel">Cancel Edit</button>
-      </div>
-    </form>
-    <div class="form-msg" id="inv-msg"></div>
-    <table style="margin-top:10px;">
-      <thead><tr><th>Code</th><th>Medication</th><th>Type</th><th>Stock</th><th>Reorder Level</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody id="inventory-body"></tbody>
-    </table>
-  </section>
-
-  <!-- Cashier: unified payment -->
-  <section id="view-payment">
-    <div class="journey" data-journey>
-      <div class="j-head">
-        <label for="journey-payment">Select Patient</label>
-        <select id="journey-payment" data-journey-select style="min-width:240px;"></select>
-        <div class="j-meta" data-journey-meta></div>
-      </div>
-      <div class="j-steps" data-journey-steps></div>
+    <div class="feat">
+      <div class="f-ico"><svg class="ic" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></div>
+      <h3>Inventory You Control</h3>
+      <p>Add, edit and delete medication stock with auto-generated item codes, reorder levels and In stock / Low stock / Out of stock alerts — prescription dropdowns read straight from it.</p>
     </div>
+  </div>
+</section>
 
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg></span> Cashier &mdash; Payment</h2>
-    <p class="subtitle">Next patient to pay: generate the document, take payment, and update the status &mdash; all on one page.</p>
-    <div class="field">
-      <label for="pay-patient">Next Patient to Pay</label>
-      <select id="pay-patient" style="min-width:280px;"></select>
+<section id="roles" class="journey-sec">
+  <div class="wrap">
+    <h2 class="sec">Built for <em>every role</em> in your clinic.</h2>
+    <p class="sec-sub">Not another complicated system. Each person gets exactly one page — with a dropdown to pick the patient and a tracker showing what's next.</p>
+    <div class="roles">
+      <div class="role"><span class="r-tag">FRONT DESK</span><h4>Patient Management</h4><p>Register, edit, queue, rooms, Call &amp; WhatsApp.</p></div>
+      <div class="role"><span class="r-tag">DOCTOR</span><h4>Consultation Page</h4><p>Diagnosis, prescription, remarks, MC — one page.</p></div>
+      <div class="role"><span class="r-tag">PHARMACY</span><h4>Dispensing &amp; Inventory</h4><p>QR verification, stock CRUD, low-stock alerts.</p></div>
+      <div class="role"><span class="r-tag">CASHIER</span><h4>Payment Page</h4><p>Quotation, invoice, receipt — and ✓ Paid status.</p></div>
     </div>
-    <div id="pay-summary"></div>
-    <form id="pay-form" style="margin-top:12px;">
-      <div class="field">
-        <label for="pay-doc">Document</label>
-        <select id="pay-doc">
-          <option value="quotation">Quotation</option>
-          <option value="invoice">Invoice</option>
-          <option value="receipt">Receipt</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="pay-method">Payment Method</label>
-        <select id="pay-method">
-          <option>Cash</option><option>Card</option><option>Online Transfer</option><option>e-Wallet</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="pay-amount">Amount (RM)</label>
-        <input type="number" id="pay-amount" min="0" step="0.01" style="min-width:130px;">
-      </div>
-      <div class="field">
-        <label for="pay-status">Update Status After Payment</label>
-        <select id="pay-status">
-          <option value="Paid">Paid (with checked icon)</option>
-          <option>Waiting</option>
-          <option>In Consultation</option>
-          <option>Done</option>
-          <option value="">No change</option>
-        </select>
-      </div>
-      <div class="field"><button type="submit" class="add-btn">Process Payment &amp; Generate</button></div>
-    </form>
-    <div class="form-msg" id="pay-msg"></div>
-    <div id="pay-output"></div>
-  </section>
+  </div>
+</section>
 
-  <!-- Cashier -->
-  <section id="view-quotation">
-    <div class="journey" data-journey>
-      <div class="j-head">
-        <label for="journey-quotation">Select Patient</label>
-        <select id="journey-quotation" data-journey-select style="min-width:240px;"></select>
-        <div class="j-meta" data-journey-meta></div>
-      </div>
-      <div class="j-steps" data-journey-steps></div>
+<section id="how" class="wrap">
+  <h2 class="sec">How a patient flows through <em>clinicKU.</em></h2>
+  <p class="sec-sub">One path. Zero guesswork. The tracker shows it live on every page.</p>
+  <div class="steps">
+    <div class="jstep"><div class="jdot"><svg class="ic" viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M2 21c0-4 3.5-6.5 8-6.5 2 0 3.8.5 5.2 1.4"/><path d="M19 8v6M16 11h6"/></svg></div><b>Registered</b><span>Front desk adds patient</span></div>
+    <div class="jstep"><div class="jdot"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div><b>Diagnosis</b><span>Doctor records visit</span></div>
+    <div class="jstep"><div class="jdot"><svg class="ic" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><path d="M9 13h7"/></svg></div><b>Prescribed</b><span>Meds from live stock</span></div>
+    <div class="jstep"><div class="jdot"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></div><b>Dispensed</b><span>Pharmacy QR-verifies</span></div>
+    <div class="jstep"><div class="jdot"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg></div><b>Paid</b><span>Cashier ✓ status updates</span></div>
+  </div>
+
+  <div class="quote-card">
+    <p>"Before clinicKU, our queue was a notebook and our stock count was guesswork. Now the doctor's prescription lands straight in the pharmacy, the QR scan catches mistakes, and the cashier prints a proper receipt — all without asking each other what's happening."</p>
+    <div class="who">— Sample testimonial · clinicKU pilot user, Klang Valley</div>
+  </div>
+</section>
+
+<section id="pricing" class="wrap">
+  <h2 class="sec">Simple pricing. <em>Start free.</em></h2>
+  <p class="sec-sub">The full demo is free and runs instantly in your browser — try every feature before deciding anything.</p>
+  <div class="price-grid">
+    <div class="plan">
+      <h3>Free Demo</h3>
+      <div class="price">RM 0</div>
+      <ul>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Full app, all features</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Sample data included</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Runs in any browser</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> No signup, no card</li>
+      </ul>
+      <a class="btn btn-ghost" href="app.html">Try It Now</a>
     </div>
-
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><path d="M9 13h7M9 17h7"/></svg></span> Cashier &mdash; Quotation</h2>
-    <p class="subtitle">Generate a price estimate for a patient&rsquo;s visit. Sample amounts only.</p>
-    <form class="doc-form">
-      <div class="field"><label>Patient</label><select class="bill-patient" data-doc="quotation" style="min-width:260px;"></select></div>
-      <div class="field"><button type="submit" class="add-btn">Generate Quotation</button></div>
-    </form>
-    <div class="doc-output" data-out="quotation"></div>
-  </section>
-
-  <section id="view-invoice">
-    <div class="journey" data-journey>
-      <div class="j-head">
-        <label for="journey-invoice">Select Patient</label>
-        <select id="journey-invoice" data-journey-select style="min-width:240px;"></select>
-        <div class="j-meta" data-journey-meta></div>
-      </div>
-      <div class="j-steps" data-journey-steps></div>
+    <div class="plan hot">
+      <span class="hot-tag">MOST POPULAR</span>
+      <h3>Single Clinic</h3>
+      <div class="price">Coming soon</div>
+      <ul>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Everything in demo</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Data saved between visits</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Multi-user roles &amp; login</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Daily reports &amp; export</li>
+      </ul>
+      <a class="btn btn-primary" href="#final">Join Waitlist</a>
     </div>
-
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><path d="M9 13h7M9 17h4"/></svg></span> Cashier &mdash; Invoice</h2>
-    <p class="subtitle">Generate an invoice with payment due. Sample amounts only.</p>
-    <form class="doc-form">
-      <div class="field"><label>Patient</label><select class="bill-patient" data-doc="invoice" style="min-width:260px;"></select></div>
-      <div class="field">
-        <label>Payment Method</label>
-        <select class="pay-method">
-          <option>Cash</option><option>Card</option><option>Online Transfer</option><option>e-Wallet</option>
-        </select>
-      </div>
-      <div class="field"><button type="submit" class="add-btn">Generate Invoice</button></div>
-    </form>
-    <div class="doc-output" data-out="invoice"></div>
-  </section>
-
-  <section id="view-receipt">
-    <div class="journey" data-journey>
-      <div class="j-head">
-        <label for="journey-receipt">Select Patient</label>
-        <select id="journey-receipt" data-journey-select style="min-width:240px;"></select>
-        <div class="j-meta" data-journey-meta></div>
-      </div>
-      <div class="j-steps" data-journey-steps></div>
+    <div class="plan">
+      <h3>Group / Chain</h3>
+      <div class="price">Let's talk</div>
+      <ul>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Multi-branch dashboard</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Central inventory</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Custom branding</li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Priority support</li>
+      </ul>
+      <a class="btn btn-ghost" href="https://www.thesaviorofficial.com" target="_blank" rel="noopener">Contact Us</a>
     </div>
+  </div>
+</section>
 
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><path d="M5 2v20l3-2 3 2 3-2 3 2 2-1.5V2z"/><path d="M9 8h7M9 12h7M9 16h4"/></svg></span> Cashier &mdash; Receipt</h2>
-    <p class="subtitle">Generate a payment receipt. Sample amounts only.</p>
-    <form class="doc-form">
-      <div class="field"><label>Patient</label><select class="bill-patient" data-doc="receipt" style="min-width:260px;"></select></div>
-      <div class="field">
-        <label>Payment Method</label>
-        <select class="pay-method">
-          <option>Cash</option><option>Card</option><option>Online Transfer</option><option>e-Wallet</option>
-        </select>
-      </div>
-      <div class="field"><button type="submit" class="add-btn">Generate Receipt</button></div>
-    </form>
-    <div class="doc-output" data-out="receipt"></div>
-  </section>
-
-  <!-- Summary -->
-  <section id="view-summary">
-    <h2><span class="h2-icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span> Visit Summary</h2>
-    <p class="subtitle">Fast snapshot of today&rsquo;s clinic flow.</p>
-    <div class="count-cards">
-      <div class="count-card waiting"><div class="num" id="count-waiting">0</div><div class="label">Waiting</div></div>
-      <div class="count-card consultation"><div class="num" id="count-consultation">0</div><div class="label">In Consultation</div></div>
-      <div class="count-card done"><div class="num" id="count-done">0</div><div class="label">Done</div></div>
-    </div>
-  </section>
-</main>
+<section id="final" class="wrap">
+  <div class="final">
+    <h2>Your clinic's upgrade is one click away.</h2>
+    <p>No installation. No training day. Open it, click around, and see why one screen beats four tools.</p>
+    <a class="btn" href="app.html"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Launch clinicKU Now — It's Free</a>
+  </div>
+</section>
 
 <footer>
-  <div class="footer-inner">
-    <div class="footer-left" id="footer-date"></div>
-    <div class="footer-right">&copy; <span id="footer-year"></span> The Savior Malaysia &middot; <a href="https://www.thesaviorofficial.com" target="_blank" rel="noopener">www.thesaviorofficial.com</a> &middot; All Rights Reserved</div>
+  <div class="wrap foot">
+    <div>© <span id="yr"></span> The Savior Malaysia · All Rights Reserved</div>
+    <div><a href="https://www.thesaviorofficial.com" target="_blank" rel="noopener">www.thesaviorofficial.com</a> · <a href="app.html">Open the App</a></div>
   </div>
 </footer>
 
-<!-- Patient profile overlay -->
-<div class="overlay" id="profile-overlay">
-  <div class="profile-card" role="dialog" aria-label="Patient profile">
-    <div class="profile-head">
-      <h3 id="profile-title">Patient Profile</h3>
-      <button class="close-btn" id="profile-close" aria-label="Close profile">✕ Close</button>
-    </div>
-    <div class="profile-body">
-      <h4>Details</h4>
-      <div id="profile-details"></div>
-      <h4>Medication Dispensing</h4>
-      <div id="profile-meds"></div>
-      <div class="med-row">
-        <div class="field">
-          <label for="med-name">Medication</label>
-          <select id="med-name" style="min-width:200px;"></select>
-        </div>
-        <div class="field">
-          <label for="med-dosage">Dosage</label>
-          <input type="text" id="med-dosage" placeholder="e.g. 3x daily">
-        </div>
-        <div class="field">
-          <label for="med-qty">Quantity</label>
-          <input type="text" id="med-qty" placeholder="e.g. 30 tablets">
-        </div>
-        <div class="field"><button type="button" class="add-btn" id="med-add-btn">Add Medication</button></div>
-      </div>
-      <div class="form-msg" id="med-msg"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Staff profile overlay -->
-<div class="overlay" id="staff-overlay">
-  <div class="profile-card" role="dialog" aria-label="My staff profile">
-    <div class="profile-head">
-      <h3>My Staff Profile</h3>
-      <button class="close-btn" id="staff-close" aria-label="Close staff profile">✕ Close</button>
-    </div>
-    <div class="profile-body" id="staff-details"></div>
-  </div>
-</div>
-
 <script>
-  const STATUS_OPTIONS = ["Waiting", "In Consultation", "Done", "Paid"];
-  const ROOMS = ["Unassigned", "Room 1", "Room 2", "Room 3", "Room 4"];
-
-  // ---- Menu definition: main menu -> submenus (one view per feature) ----
-  const MENU = [
-    { label: "Patient", subs: [
-      { id: "view-patient", label: "All" }
-    ]},
-    { label: "Doctor", subs: [
-      { id: "view-doctor", label: "Consultation" }
-    ]},
-    { label: "Pharmacy", subs: [
-      { id: "view-inventory", label: "Medication Inventory" },
-      { id: "view-dispensing", label: "Dispensing" }
-    ]},
-    { label: "Cashier", subs: [
-      { id: "view-payment", label: "Payment" },
-      { id: "view-quotation", label: "Quotation" },
-      { id: "view-invoice", label: "Invoice" },
-      { id: "view-receipt", label: "Receipt" }
-    ]}
-  ];
-
-  // ---- Auto code generation ----
-  const TYPE_CODES = {
-    "paracetamol": "PAR", "amoxicillin": "AMX", "metformin": "MET",
-    "loratadine": "LOR", "glucosamine": "GLU", "amlodipine": "AML",
-    "ibuprofen": "IBU", "insulin": "INS", "salbutamol": "SAL",
-    "omeprazole": "OME", "statin": "STA", "vaccine": "VAC"
-  };
-  function medTypeKey(name) {
-    const n = name.toLowerCase();
-    for (const k of Object.keys(TYPE_CODES)) if (n.includes(k)) return k;
-    return null;
-  }
-  function medCode(name) {
-    const prefix = TYPE_CODES[medTypeKey(name)] ||
-      (name.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 3) || "MED");
-    return "TSV-" + prefix + "-" + String(Math.floor(1000 + Math.random() * 9000));
-  }
-  function drawQr(canvas, code) {
-    const n = 21, cell = 5;
-    canvas.width = canvas.height = n * cell;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#0000FF";
-    let h = 2166136261;
-    for (const c of code) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
-    const rnd = i => { let x = (h ^ (i * 2654435761)) >>> 0; x ^= x << 13; x >>>= 0; x ^= x >> 17; return (x >>> 0) % 100; };
-    for (let y = 0; y < n; y++)
-      for (let x = 0; x < n; x++)
-        if (rnd(y * n + x) < 46) ctx.fillRect(x * cell, y * cell, cell, cell);
-    const finder = (fx, fy) => {
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(fx * cell, fy * cell, 7 * cell, 7 * cell);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect((fx + 1) * cell, (fy + 1) * cell, 5 * cell, 5 * cell);
-      ctx.fillStyle = "#0000FF";
-      ctx.fillRect((fx + 2) * cell, (fy + 2) * cell, 3 * cell, 3 * cell);
-    };
-    finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
-  }
-
-  // ---- Sample data ----
-  let patients = [
-    { id: 1, name: "Ahmad Zulkifli bin Hassan", visitType: "General Consultation", status: "Waiting",
-      phone: "012-345 6789", email: "ahmad.zulkifli@email.com", address: "8, Jalan Kenari 5, 47100 Puchong, Selangor", room: "Unassigned",
-      diagnosis: "", remarks: "",
-      medications: [{ name: "Paracetamol 665mg", dosage: "3x daily when needed", qty: "20 tablets", dispensed: true, scanned: false, code: "TSV-PAR-1042" }] },
-    { id: 2, name: "Siti Nurhaliza binti Abdullah", visitType: "Follow-up", status: "In Consultation",
-      phone: "019-876 5432", email: "siti.nurhaliza@email.com", address: "23, Taman Seri Murni, 05250 Alor Setar, Kedah", room: "Room 2",
-      diagnosis: "", remarks: "",
-      medications: [{ name: "Metformin 500mg", dosage: "2x daily after meals", qty: "60 tablets", dispensed: true, scanned: true, code: "TSV-MET-2317" },
-                    { name: "Glucosamine 1500mg", dosage: "Once daily", qty: "30 sachets", dispensed: false, scanned: false, code: "TSV-GLU-8804" }] },
-    { id: 3, name: "Lim Wei Jian", visitType: "Medication Refill", status: "Done",
-      phone: "016-222 8899", email: "weijian.lim@email.com", address: "56, Lebuh Pantai, 10300 George Town, Pulau Pinang", room: "Room 1",
-      diagnosis: "", remarks: "",
-      medications: [{ name: "Loratadine 10mg", dosage: "Once daily", qty: "30 tablets", dispensed: true, scanned: true, code: "TSV-LOR-5561" }] }
-  ];
-  let nextId = 4;
-
-  let inventory = [
-    { code: "TSV-PAR-1042", name: "Paracetamol 665mg", type: "Paracetamol", stock: 240, reorder: 50 },
-    { code: "TSV-MET-2317", name: "Metformin 500mg", type: "Metformin", stock: 180, reorder: 40 },
-    { code: "TSV-GLU-8804", name: "Glucosamine 1500mg", type: "Glucosamine", stock: 30, reorder: 40 },
-    { code: "TSV-LOR-5561", name: "Loratadine 10mg", type: "Loratadine", stock: 96, reorder: 24 },
-    { code: "TSV-AMX-7710", name: "Amoxicillin 500mg", type: "Amoxicillin", stock: 0, reorder: 30 },
-    { code: "TSV-AML-3325", name: "Amlodipine 5mg", type: "Amlodipine", stock: 64, reorder: 20 }
-  ];
-
-  const currentStaff = {
-    name: "Nurul Aisyah binti Kamarudin",
-    position: "Senior Pharmacist",
-    staffId: "TSV-STF-0084",
-    department: "Pharmacy & Cashier",
-    phone: "011-2345 6780",
-    email: "nurul.aisyah@thesavior.clinic",
-    joined: "4 March 2022",
-    shift: "Morning shift · 8:00 AM – 4:30 PM"
-  };
-
-  // ---- Helpers ----
-  const $ = id => document.getElementById(id);
-  function statusClass(s) {
-    if (s === "Waiting") return "status-waiting";
-    if (s === "In Consultation") return "status-consultation";
-    if (s === "Paid") return "status-paid";
-    return "status-done";
-  }
-  function digits(phone) {
-    const d = phone.replace(/\D/g, "");
-    return d.startsWith("6") ? d : "6" + d;
-  }
-  function detailLine(label, value) {
-    const div = document.createElement("div");
-    div.className = "detail-line";
-    const k = document.createElement("span");
-    k.className = "k";
-    k.textContent = label + ":";
-    div.append(k, document.createTextNode(value || "—"));
-    return div;
-  }
-  function makeSelect(options, value, ariaLabel, onChange, cls) {
-    const sel = document.createElement("select");
-    sel.className = cls;
-    sel.setAttribute("aria-label", ariaLabel);
-    options.forEach(o => {
-      const opt = document.createElement("option");
-      opt.value = o;
-      opt.textContent = o;
-      if (o === value) opt.selected = true;
-      sel.appendChild(opt);
-    });
-    sel.addEventListener("change", e => onChange(e.target.value));
-    return sel;
-  }
-  function fillDropdown(sel, patientsList, keepId) {
-    const prev = keepId || sel.value;
-    sel.innerHTML = "";
-    patientsList.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = p.name;
-      sel.appendChild(opt);
-    });
-    if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
-  }
-  function fillPatientDropdowns() {
-    ["doctor-patient", "profile-patient", "disp-patient", "pay-patient"].forEach(id => fillDropdown($(id), patients));
-    document.querySelectorAll(".bill-patient").forEach(s => fillDropdown(s, patients));
-    const medSel = $("med-name");
-    const prev = medSel.value;
-    medSel.innerHTML = "";
-    inventory.forEach(i => {
-      const opt = document.createElement("option");
-      opt.value = i.name;
-      opt.textContent = i.name + " (" + i.stock + " in stock)";
-      medSel.appendChild(opt);
-    });
-    if ([...medSel.options].some(o => o.value === prev)) medSel.value = prev;
-  }
-  function fillRxMedDropdown() {
-    const sel = $("rx-med");
-    sel.innerHTML = "";
-    inventory.forEach(i => {
-      const opt = document.createElement("option");
-      opt.value = i.name;
-      opt.textContent = i.name + " — " + i.type + " (" + i.stock + " in stock)";
-      sel.appendChild(opt);
-    });
-  }
-
-  // ---- Patient journey tracker (shared across Doctor/Pharmacy/Cashier) ----
-  const JOURNEY_STEPS = [
-    { key: "registered", label: "Registered", icon: '<svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M2 21c0-4 3.5-6.5 8-6.5 2 0 3.8.5 5.2 1.4"/><path d="M19 8v6M16 11h6"/></svg>' },
-    { key: "diagnosis", label: "Diagnosis", icon: '<svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg>' },
-    { key: "prescribed", label: "Prescribed", icon: '<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><path d="M9 13h7M9 17h4"/></svg>' },
-    { key: "dispensed", label: "Dispensed", icon: '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 11v6M9 14h6"/></svg>' },
-    { key: "paid", label: "Paid", icon: '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg>' }
-  ];
-  const journeySelects = [...document.querySelectorAll("[data-journey-select]")];
-  function fillJourneyDropdowns() {
-    journeySelects.forEach(sel => fillDropdown(sel, patients));
-  }
-  function journeyState(p) {
-    // returns index of furthest completed step; active = next step to fulfill
-    let done = -1;
-    const allDispensed = p.medications.length && p.medications.every(m => m.dispensed);
-    const someDispensed = p.medications.some(m => m.dispensed);
-    if (p.status === "Paid") done = 4;                            // paid via cashier
-    else if (p.status === "Done" && allDispensed) done = 4;       // paid / visit complete
-    else if (someDispensed) done = 3;                             // at least one dispensed
-    else if (p.medications.length) done = 2;                      // prescribed, not dispensed
-    else if (p.diagnosis) done = 1;                               // diagnosed
-    else done = 0;                                                // registered only
-    if (done === 4) return { done: 4, active: -1 };               // everything complete
-    return { done: done, active: Math.min(done + 1, 4) };
-  }
-  function renderJourney() {
-    journeySelects.forEach(sel => {
-      const p = patients.find(x => x.id === parseInt(sel.value, 10));
-      const card = sel.closest(".journey");
-      const steps = card.querySelector("[data-journey-steps]");
-      const meta = card.querySelector("[data-journey-meta]");
-      if (!p) { steps.innerHTML = ""; meta.textContent = ""; return; }
-      meta.textContent = p.visitType + " · Status: " + p.status;
-      const st = journeyState(p);
-      steps.innerHTML = "";
-      JOURNEY_STEPS.forEach((s, i) => {
-        const step = document.createElement("div");
-        step.className = "j-step" + (i <= st.done ? " done" : "") + (i === st.active && st.active !== -1 ? " active" : "");
-        const stateText = i <= st.done ? (st.active === -1 ? "Complete" : "Fulfilled") : (i === st.active ? "Next step" : "Pending");
-        step.innerHTML =
-          '<div class="j-dot">' + s.icon + "</div>" +
-          '<div class="j-label">' + s.label + "</div>" +
-          '<div class="j-state">' + stateText + "</div>";
-        steps.appendChild(step);
-      });
-    });
-  }
-  journeySelects.forEach(sel => sel.addEventListener("change", renderJourney));
-
-  // ---- Navigation ----
-  function buildMenu() {
-    const nav = $("main-menu");
-    nav.innerHTML = "";
-    MENU.forEach(m => {
-      const item = document.createElement("div");
-      item.className = "menu-item";
-      const main = document.createElement("button");
-      main.className = "menu-main";
-      const ICONS = {
-        "Patient": '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5"/></svg>',
-        "Doctor": '<svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg>',
-        "Pharmacy": '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 11v6M9 14h6"/></svg>',
-        "Cashier": '<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg>'
-      };
-      main.innerHTML = (ICONS[m.label] || "") + m.label + ' <span class="caret">▾</span>';
-      main.setAttribute("aria-haspopup", "true");
-      main.setAttribute("aria-expanded", "false");
-      const sub = document.createElement("div");
-      sub.className = "submenu";
-      m.subs.forEach(s => {
-        const b = document.createElement("button");
-        b.textContent = s.label;
-        b.dataset.view = s.id;
-        b.addEventListener("click", () => { showView(s.id); closeAllMenus(); });
-        sub.appendChild(b);
-      });
-      main.addEventListener("click", e => {
-        e.stopPropagation();
-        const wasOpen = item.classList.contains("open");
-        closeAllMenus();
-        if (!wasOpen) { item.classList.add("open"); main.setAttribute("aria-expanded", "true"); }
-      });
-      item.append(main, sub);
-      nav.appendChild(item);
-    });
-    document.addEventListener("click", closeAllMenus);
-  }
-  function closeAllMenus() {
-    document.querySelectorAll(".menu-item.open").forEach(i => {
-      i.classList.remove("open");
-      i.querySelector(".menu-main").setAttribute("aria-expanded", "false");
-    });
-  }
-  function showView(id) {
-    document.querySelectorAll("main section").forEach(s => s.classList.toggle("visible", s.id === id));
-    document.querySelectorAll(".submenu button").forEach(b => b.classList.toggle("active", b.dataset.view === id));
-    document.querySelectorAll(".menu-item").forEach(item => {
-      const has = [...item.querySelectorAll(".submenu button")].some(b => b.dataset.view === id);
-      item.classList.toggle("active", has);
-    });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    if (id === "view-doctor") { renderDoctorAll(); loadDoctorFields(); }
-    if (id === "view-dispensing") renderDispensing();
-    if (id === "view-payment") renderPaySummary();
-    if (id === "view-inventory") renderInventory();
-  }
-
-  // ---- Queue ----
-  function renderQueue() {
-    const queueBody = $("queue-body");
-    queueBody.innerHTML = "";
-    patients.forEach((p, i) => {
-      const tr = document.createElement("tr");
-      tr.className = statusClass(p.status);
-      const tdNo = document.createElement("td");
-      tdNo.textContent = String(i + 1).padStart(2, "0");
-      const tdName = document.createElement("td");
-      tdName.className = "name-cell";
-      const nameDiv = document.createElement("div");
-      nameDiv.className = "p-name";
-      nameDiv.textContent = p.name;
-      nameDiv.addEventListener("click", () => {
-        $("profile-patient").value = p.id;
-        renderProfileView();
-        $("profile-patient").scrollIntoView({ behavior: "smooth", block: "center" });
-      });
-      tdName.appendChild(nameDiv);
-      if (p.phone) {
-        const c = document.createElement("div");
-        c.className = "contact-line";
-        c.textContent = p.phone;
-        tdName.appendChild(c);
-      }
-      if (p.address) {
-        const a = document.createElement("div");
-        a.className = "contact-line";
-        a.textContent = p.address;
-        tdName.appendChild(a);
-      }
-      const medTag = document.createElement("span");
-      medTag.className = "med-tag " + (p.medications.length === 0 ? "none" : (p.medications.every(m => m.dispensed) ? "dispensed" : "pending"));
-      medTag.textContent = p.medications.length === 0 ? "No medication"
-        : (p.medications.every(m => m.dispensed) ? "Medication dispensed" : "Medication pending");
-      tdName.appendChild(medTag);
-
-      const tdType = document.createElement("td");
-      const badge = document.createElement("span");
-      badge.className = "badge";
-      badge.textContent = p.visitType;
-      tdType.appendChild(badge);
-
-      const tdRoom = document.createElement("td");
-      tdRoom.appendChild(makeSelect(ROOMS, p.room, "Consultation room for " + p.name, v => { p.room = v; }, "room"));
-      const tdStatus = document.createElement("td");
-      if (p.status === "Paid") {
-        const paidTag = document.createElement("span");
-        paidTag.className = "paid-tag";
-        paidTag.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Paid';
-        tdStatus.appendChild(paidTag);
-      } else {
-        tdStatus.appendChild(makeSelect(STATUS_OPTIONS, p.status, "Status for " + p.name, v => { p.status = v; renderAll(); }, "status"));
-      }
-
-      const tdActions = document.createElement("td");
-      const wrap = document.createElement("div");
-      wrap.className = "actions";
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.className = "act-btn edit-btn";
-      editBtn.textContent = "Edit";
-      editBtn.setAttribute("aria-label", "Edit " + p.name);
-      editBtn.addEventListener("click", () => startPatientEdit(p.id));
-      const delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.className = "act-btn del-btn";
-      delBtn.textContent = "Delete";
-      delBtn.setAttribute("aria-label", "Delete " + p.name);
-      delBtn.addEventListener("click", () => {
-        if (confirm("Delete " + p.name + " from today's queue?")) {
-          patients = patients.filter(x => x.id !== p.id);
-          fillPatientDropdowns();
-          renderAll();
-        }
-      });
-      wrap.append(editBtn, delBtn);
-      if (p.phone) {
-        const call = document.createElement("a");
-        call.className = "act-btn call-btn";
-        call.href = "tel:" + digits(p.phone);
-        call.innerHTML = '<svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7A2 2 0 0 1 22 16.9z"/></svg> Call';
-        const wa = document.createElement("a");
-        wa.className = "act-btn wa-btn";
-        wa.href = "https://wa.me/" + digits(p.phone) +
-          "?text=" + encodeURIComponent("Hello " + p.name + ", this is the clinic. Your visit today (" + p.visitType + ") is currently: " + p.status + ".");
-        wa.target = "_blank";
-        wa.rel = "noopener";
-        wa.textContent = "WhatsApp";
-        wrap.append(call, wa);
-      }
-      tdActions.appendChild(wrap);
-      tr.append(tdNo, tdName, tdType, tdRoom, tdStatus, tdActions);
-      queueBody.appendChild(tr);
-    });
-  }
-
-  // ---- Register ----
-  let patientEditId = null;
-  function startPatientEdit(id) {
-    const p = patients.find(x => x.id === id);
-    if (!p) return;
-    patientEditId = id;
-    $("patient-name").value = p.name;
-    $("visit-type").value = p.visitType;
-    $("patient-phone").value = p.phone || "";
-    $("patient-email").value = p.email || "";
-    $("patient-address").value = p.address || "";
-    $("patient-submit").textContent = "Save Changes";
-    $("patient-cancel-wrap").style.display = "flex";
-    $("form-msg").textContent = "";
-    $("patient-name").focus();
-    $("patient-name").scrollIntoView({ behavior: "smooth", block: "center" });
-  }
-  $("patient-cancel").addEventListener("click", () => {
-    patientEditId = null;
-    $("register-form").reset();
-    $("patient-submit").textContent = "Add Patient";
-    $("patient-cancel-wrap").style.display = "none";
-    $("form-msg").textContent = "";
-  });
-  $("register-form").addEventListener("submit", e => {
-    e.preventDefault();
-    const name = $("patient-name").value.trim();
-    if (!name) { $("form-msg").textContent = "Please enter the patient's name."; $("patient-name").focus(); return; }
-    const phone = $("patient-phone").value.trim();
-    if (phone && !/^[0-9+\-\s()]+$/.test(phone)) {
-      $("form-msg").textContent = "Please enter a valid phone number (digits, spaces and dashes only).";
-      $("patient-phone").focus();
-      return;
-    }
-    if (patientEditId !== null) {
-      const p = patients.find(x => x.id === patientEditId);
-      p.name = name;
-      p.visitType = $("visit-type").value;
-      p.phone = phone;
-      p.email = $("patient-email").value.trim();
-      p.address = $("patient-address").value.trim();
-      $("form-msg").className = "form-msg ok";
-      $("form-msg").textContent = name + " updated.";
-      patientEditId = null;
-      $("patient-submit").textContent = "Add Patient";
-      $("patient-cancel-wrap").style.display = "none";
-    } else {
-      patients.push({
-        id: nextId++, name: name, visitType: $("visit-type").value, status: "Waiting",
-        phone: phone, email: $("patient-email").value.trim(), address: $("patient-address").value.trim(),
-        room: "Unassigned", diagnosis: "", remarks: "", medications: []
-      });
-      $("form-msg").className = "form-msg ok";
-      $("form-msg").textContent = name + " added to today's queue.";
-    }
-    ["patient-name", "patient-phone", "patient-email"].forEach(id => $(id).value = "");
-    $("patient-address").value = "";
-    $("visit-type").selectedIndex = 0;
-    fillPatientDropdowns();
-    renderAll();
-  });
-
-  // ---- Patient profile (in-page view) ----
-  function renderProfileView() {
-    const sel = $("profile-patient");
-    const p = patients.find(x => x.id === parseInt(sel.value, 10));
-    const box = $("profile-view");
-    if (!p) { box.innerHTML = ""; return; }
-    const details = [
-      ["Name", p.name], ["Visit type", p.visitType], ["Status", p.status],
-      ["Consultation room", p.room], ["Phone", p.phone], ["Email", p.email], ["Address", p.address],
-      ["Diagnosis", p.diagnosis], ["Doctor's remarks", p.remarks]
-    ];
-    let html = "";
-    details.forEach(kv => {
-      html += "<div class='detail-line'><span class='k'>" + kv[0] + ":</span>" + (kv[1] || "—") + "</div>";
-    });
-    html += "<h4 style='margin-top:14px;'>Medication Dispensing</h4>";
-    if (p.medications.length === 0) {
-      html += "<div class='med-status-line'>No medication recorded yet.</div>";
-    } else {
-      p.medications.forEach(m => {
-        html += "<div class='med-status-line'><div><strong>" + m.name + "</strong> — " + m.dosage + ", " + m.qty +
-          " <span class=\"med-tag " + (m.dispensed ? "dispensed" : "pending") + "\">" + (m.dispensed ? "Dispensed" : "Pending") + "</span>" +
-          (m.scanned ? " · QR verified" : "") + " <span class='rx-code'>" + m.code + "</span></div>" +
-          "<button type='button' class='add-btn' style='padding:6px 12px;font-size:12px;' data-toggle-med='" + m.code + "'>" +
-          (m.dispensed ? "Mark Pending" : "Mark Dispensed") + "</button></div>";
-      });
-      const allDone = p.medications.every(m => m.dispensed);
-      html += "<div class='med-status-line'>" + (allDone ? "All medication dispensed." :
-        "Medication pending: " + p.medications.filter(m => !m.dispensed).map(m => m.name).join(", ")) + "</div>";
-    }
-    box.innerHTML = "<div class='cashier-doc'>" + html + "</div>";
-    box.querySelectorAll("[data-toggle-med]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const m = p.medications.find(x => x.code === btn.dataset.toggleMed);
-        if (!m) return;
-        if (!m.dispensed) { m.dispensed = true; deductStock(m.name, m.qty); }
-        else { m.dispensed = false; m.scanned = false; }
-        renderProfileView();
-        renderAll();
-      });
-    });
-  }
-  $("profile-patient").addEventListener("change", renderProfileView);
-
-  // ---- Doctor: shared patient selector loads all fields ----
-  function doctorPatient() {
-    return patients.find(x => x.id === parseInt($("doctor-patient").value, 10));
-  }
-  function loadDoctorFields() {
-    const p = doctorPatient();
-    if (!p) return;
-    $("diag-input").value = p.diagnosis || "";
-    $("rem-input").value = p.remarks || "";
-    $("mc-msg").textContent = "";
-    renderDoctorAll();
-  }
-  $("doctor-patient").addEventListener("change", loadDoctorFields);
-  $("doctor-patient").addEventListener("change", () => {
-    journeySelects.forEach(sel => { sel.value = $("doctor-patient").value; });
-    renderJourney();
-  });
-
-  $("diag-save").addEventListener("click", () => {
-    const p = doctorPatient();
-    const d = $("diag-input").value.trim();
-    if (!d) { $("diag-msg").textContent = "Please enter a diagnosis."; return; }
-    p.diagnosis = d;
-    $("diag-msg").className = "form-msg ok";
-    $("diag-msg").textContent = "Diagnosis saved for " + p.name + ".";
-    renderDoctorAll();
-  });
-  $("rem-save").addEventListener("click", () => {
-    const p = doctorPatient();
-    p.remarks = $("rem-input").value.trim();
-    $("rem-msg").className = "form-msg ok";
-    $("rem-msg").textContent = p.remarks ? "Remarks saved for " + p.name + "." : "Remarks cleared for " + p.name + ".";
-    renderDoctorAll();
-  });
-
-  // ---- Doctor: prescription (inventory dropdown) ----
-  let rxDraft = [];
-  function renderRxDraft() {
-    const rxList = $("rx-list");
-    rxList.innerHTML = "";
-    if (rxDraft.length === 0) {
-      const none = document.createElement("div");
-      none.className = "med-status-line";
-      none.textContent = "No medication added yet.";
-      rxList.appendChild(none);
-      return;
-    }
-    rxDraft.forEach((m, idx) => {
-      const line = document.createElement("div");
-      line.className = "med-status-line";
-      const info = document.createElement("div");
-      info.innerHTML = "<strong>" + m.name + "</strong> — " + m.dosage + ", supply: " + m.qty;
-      line.appendChild(info);
-      const rm = document.createElement("button");
-      rm.type = "button";
-      rm.className = "add-btn";
-      rm.style.cssText = "padding:6px 12px;font-size:12px;background:#b02a2a;";
-      rm.textContent = "Remove";
-      rm.addEventListener("click", () => { rxDraft.splice(idx, 1); renderRxDraft(); });
-      line.appendChild(rm);
-      rxList.appendChild(line);
-    });
-  }
-  $("prescribe-form").addEventListener("submit", e => {
-    e.preventDefault();
-    const name = $("rx-med").value;
-    if (!name) { $("rx-msg").textContent = "Select a medication."; return; }
-    rxDraft.push({
-      name: name,
-      dosage: $("rx-dosage").value.trim() || "As directed",
-      qty: $("rx-supply").value.trim() || "As supplied"
-    });
-    $("rx-msg").textContent = "";
-    $("rx-dosage").value = "";
-    $("rx-supply").value = "";
-    renderRxDraft();
-  });
-  $("rx-save").addEventListener("click", () => {
-    const p = doctorPatient();
-    if (rxDraft.length === 0) { $("rx-save-msg").textContent = "Add at least one medication first."; return; }
-    rxDraft.forEach(m => {
-      p.medications.push({ name: m.name, dosage: m.dosage, qty: m.qty, dispensed: false, scanned: false, code: medCode(m.name) });
-    });
-    $("rx-save-msg").className = "form-msg ok";
-    $("rx-save-msg").textContent = rxDraft.length + " item(s) prescribed for " + p.name + " and sent to Pharmacy.";
-    renderJourney();
-    rxDraft = [];
-    renderRxDraft();
-    renderAll();
-  });
-
-  // ---- Doctor: MC ----
-  $("mc-form").addEventListener("submit", e => {
-    e.preventDefault();
-    const p = doctorPatient();
-    if (!p.diagnosis) {
-      $("mc-msg").textContent = p.name + " has no diagnosis yet — save one in Doctor › Diagnosis first.";
-      $("mc-output").innerHTML = "";
-      return;
-    }
-    const days = Math.max(1, parseInt($("mc-days").value, 10) || 1);
-    $("mc-msg").textContent = "";
-    const mcNo = "TSV-MC-" + new Date().getFullYear() + "-" + String(Math.floor(10000 + Math.random() * 90000));
-    const today = new Date();
-    const end = new Date(today);
-    end.setDate(end.getDate() + days - 1);
-    const fmt = d => d.toLocaleDateString("en-MY", { day: "numeric", month: "long", year: "numeric" });
-    const out = $("mc-output");
-    out.innerHTML = "";
-    const doc = document.createElement("div");
-    doc.className = "cashier-doc";
-    doc.innerHTML =
-      "<div class='doc-head'><div><div class='doc-title'>MEDICAL CERTIFICATE</div>" +
-      "<div style='font-size:12px;color:var(--muted);'>the savior clinic · sample document</div></div>" +
-      "<div class='doc-meta'>No: <span class='doc-no'>" + mcNo + "</span><br>Issued: " + fmt(today) + "</div></div>" +
-      "<div class='doc-party'><span class='k'>This is to certify that:</span> <strong>" + p.name + "</strong><br>" +
-      "<span class='k'>Diagnosis:</span> " + p.diagnosis + "<br>" +
-      "<span class='k'>Rest period:</span> " + days + " day(s) — from " + fmt(today) + " to " + fmt(end) + "</div>" +
-      (p.remarks ? "<div class='mc-body'><span class='k' style='color:var(--muted);'>Remarks:</span> " + p.remarks + "</div>" : "") +
-      "<div class='mc-sign'><div class='sig-line'>" + currentStaff.name + "</div>" +
-      currentStaff.position + " · " + currentStaff.staffId + "<br>" +
-      "<span style='color:var(--muted);font-size:11px;'>Sample certificate for demonstration — not a valid medical document.</span></div>";
-    out.appendChild(doc);
-  });
-
-  // ---- Doctor: all ----
-  function renderDoctorAll() {
-    const list = $("doctor-all-list");
-    list.innerHTML = "";
-    const withData = patients.filter(p => p.diagnosis || p.remarks || p.medications.length);
-    if (withData.length === 0) {
-      list.innerHTML = "<div class='med-status-line'>No consultations recorded yet.</div>";
-      return;
-    }
-    withData.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "cashier-doc";
-      card.innerHTML =
-        "<div class='doc-party'><strong>" + p.name + "</strong> · " + p.visitType + " · " + p.status + "<br>" +
-        "<span class='k'>Diagnosis:</span> " + (p.diagnosis || "—") + "<br>" +
-        "<span class='k'>Remarks:</span> " + (p.remarks || "—") + "<br>" +
-        "<span class='k'>Prescriptions:</span> " +
-        (p.medications.length ? p.medications.map(m => m.name + " (" + (m.dispensed ? "dispensed" : "pending") + ")").join(", ") : "—") +
-        "</div>";
-      list.appendChild(card);
-    });
-  }
-
-  // ---- Pharmacy: dispensing ----
-  function allMedItems() {
-    const list = [];
-    patients.forEach(p => p.medications.forEach(m => list.push({ p, m })));
-    return list;
-  }
-  function scanLogOk(text) {
-    const log = $("scan-log");
-    log.textContent = "✔ " + text;
-    log.style.color = "var(--green)";
-  }
-  function scanLogErr(text) {
-    const log = $("scan-log");
-    log.textContent = "✖ " + text;
-    log.style.color = "#b02a2a";
-  }
-  function renderDispensing() {
-    const sel = $("disp-patient");
-    const p = patients.find(x => x.id === parseInt(sel.value, 10));
-    const grid = $("disp-list");
-    const info = $("disp-info");
-    grid.innerHTML = "";
-    info.innerHTML = "";
-    if (!p) return;
-    const head = document.createElement("div");
-    head.className = "med-status-line";
-    head.innerHTML = "<div><strong>" + p.name + "</strong> · " + p.visitType + " · Status: " + p.status + " · Room: " + p.room + "</div>";
-    info.appendChild(head);
-    const toSupply = p.medications.filter(m => !m.dispensed);
-    const toVerify = p.medications.filter(m => m.dispensed && !m.scanned);
-    const title = document.createElement("div");
-    title.className = "doc-party";
-    title.innerHTML = "<span class='k'>To supply / dispense:</span> " +
-      (toSupply.length ? toSupply.map(m => "<strong>" + m.name + "</strong> — " + m.dosage + ", " + m.qty).join("<br>") : "Nothing pending — all medication dispensed.");
-    info.appendChild(title);
-    if (toSupply.length === 0 && toVerify.length === 0) {
-      const none = document.createElement("div");
-      none.className = "med-status-line";
-      none.textContent = "No items awaiting dispense or scan for this patient.";
-      grid.appendChild(none);
-      return;
-    }
-    toSupply.forEach(m => {
-      const card = document.createElement("div");
-      card.className = "rx-card";
-      const cv = document.createElement("canvas");
-      drawQr(cv, m.code);
-      card.appendChild(cv);
-      const inf = document.createElement("div");
-      inf.className = "rx-info";
-      inf.innerHTML =
-        "<div class='rx-title'>" + m.name + " × " + m.qty + "</div>" +
-        "<div class='rx-sub'>" + m.dosage + " · Code: <span class='rx-code'>" + m.code + "</span></div>";
-      card.appendChild(inf);
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "add-btn";
-      btn.textContent = "Dispense";
-      btn.addEventListener("click", () => {
-        m.dispensed = true;
-        deductStock(m.name, m.qty);
-        if (p.status === "Waiting") p.status = "In Consultation";
-        else if (p.status === "In Consultation" && p.medications.every(x => x.dispensed)) p.status = "Done";
-        renderAll();
-        renderDispensing();
-        renderJourney();
-      });
-      card.appendChild(btn);
-      grid.appendChild(card);
-    });
-    toVerify.forEach(m => {
-      const card = document.createElement("div");
-      card.className = "rx-card";
-      const cv = document.createElement("canvas");
-      drawQr(cv, m.code);
-      card.appendChild(cv);
-      const inf = document.createElement("div");
-      inf.className = "rx-info";
-      inf.innerHTML =
-        "<div class='rx-title'>" + m.name + " × " + m.qty + "</div>" +
-        "<div class='rx-sub'>Dispensed — scan to verify · Code: <span class='rx-code'>" + m.code + "</span></div>";
-      card.appendChild(inf);
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "add-btn";
-      btn.textContent = "Mark Scanned";
-      btn.addEventListener("click", () => {
-        m.scanned = true;
-        scanLogOk(m.code + " verified for " + p.name);
-        renderAll();
-        renderDispensing();
-      });
-      card.appendChild(btn);
-      grid.appendChild(card);
-    });
-  }
-  $("disp-patient").addEventListener("change", renderDispensing);
-  function verifyScan() {
-    const input = $("scan-input");
-    const code = input.value.trim().toUpperCase();
-    if (!code) { scanLogErr("Enter or scan a code first."); return; }
-    const hit = allMedItems().find(x => x.m.code.toUpperCase() === code);
-    if (!hit) { scanLogErr("Code " + code + " not found in today's prescriptions."); return; }
-    if (!hit.m.dispensed) { scanLogErr(hit.m.name + " is prescribed but not yet dispensed."); return; }
-    if (hit.m.scanned) { scanLogOk(hit.m.code + " was already verified for " + hit.p.name + "."); return; }
-    hit.m.scanned = true;
-    scanLogOk(hit.m.code + " verified: " + hit.m.name + " for " + hit.p.name);
-    input.value = "";
-    renderAll();
-  }
-  $("scan-btn").addEventListener("click", verifyScan);
-  $("scan-input").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); verifyScan(); } });
-
-  // ---- Inventory ----
-  function deductStock(medName, qtyText) {
-    const item = inventory.find(i => i.name === medName);
-    if (!item) return;
-    const num = parseInt((qtyText || "").replace(/[^0-9]/g, ""), 10);
-    item.stock = Math.max(0, item.stock - (isNaN(num) ? 1 : num));
-    fillRxMedDropdown();
-    fillPatientDropdowns();
-  }
-  function stockStatus(item) {
-    if (item.stock <= 0) return ["out", "Out of stock"];
-    if (item.stock <= item.reorder) return ["low", "Low stock"];
-    return ["ok", "In stock"];
-  }
-  let invEditId = null;
-  function renderInventory() {
-    const body = $("inventory-body");
-    body.innerHTML = "";
-    inventory.forEach((item, idx) => {
-      const tr = document.createElement("tr");
-      [item.code, item.name, item.type].forEach(v => {
-        const td = document.createElement("td");
-        td.textContent = v;
-        tr.appendChild(td);
-      });
-      const tdStock = document.createElement("td");
-      tdStock.textContent = item.stock;
-      tr.appendChild(tdStock);
-      const tdRe = document.createElement("td");
-      tdRe.textContent = item.reorder;
-      tr.appendChild(tdRe);
-      const tdStatus = document.createElement("td");
-      const st = stockStatus(item);
-      const tag = document.createElement("span");
-      tag.className = "stock-tag " + st[0];
-      tag.textContent = st[1];
-      tdStatus.appendChild(tag);
-      tr.appendChild(tdStatus);
-      // actions
-      const tdAct = document.createElement("td");
-      const wrap = document.createElement("div");
-      wrap.className = "actions";
-      const edit = document.createElement("button");
-      edit.type = "button";
-      edit.className = "act-btn call-btn";
-      edit.textContent = "Edit";
-      edit.addEventListener("click", () => startInvEdit(idx));
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "act-btn del-btn";
-      del.textContent = "Delete";
-      del.setAttribute("aria-label", "Delete " + item.name);
-      del.addEventListener("click", () => {
-        if (confirm("Delete " + item.name + " from inventory?")) {
-          inventory.splice(idx, 1);
-          $("inv-msg").className = "form-msg ok";
-          $("inv-msg").textContent = item.name + " deleted from inventory.";
-          invMsgReset();
-          fillRxMedDropdown();
-          fillPatientDropdowns();
-          renderInventory();
-        }
-      });
-      wrap.append(edit, del);
-      tdAct.appendChild(wrap);
-      tr.appendChild(tdAct);
-      body.appendChild(tr);
-    });
-  }
-  function startInvEdit(idx) {
-    const item = inventory[idx];
-    invEditId = idx;
-    $("inv-name").value = item.name;
-    $("inv-type").value = item.type;
-    $("inv-stock").value = item.stock;
-    $("inv-reorder").value = item.reorder;
-    $("inv-submit").textContent = "Save Changes";
-    $("inv-cancel-wrap").style.display = "flex";
-    $("inv-msg").textContent = "";
-    $("inv-name").focus();
-  }
-  function invMsgReset() {
-    setTimeout(() => { $("inv-msg").textContent = ""; }, 4000);
-  }
-  $("inv-form").addEventListener("submit", e => {
-    e.preventDefault();
-    const name = $("inv-name").value.trim();
-    const type = $("inv-type").value.trim() || name.split(" ")[0] || "General";
-    const stock = Math.max(0, parseInt($("inv-stock").value, 10) || 0);
-    const reorder = Math.max(0, parseInt($("inv-reorder").value, 10) || 0);
-    if (!name) { $("inv-msg").textContent = "Please enter the medication name."; return; }
-    if (invEditId !== null) {
-      const item = inventory[invEditId];
-      item.name = name;
-      item.type = type;
-      item.stock = stock;
-      item.reorder = reorder;
-      $("inv-msg").className = "form-msg ok";
-      $("inv-msg").textContent = name + " updated.";
-    } else {
-      const code = "TSV-" + (medCode(name).split("-")[1] || "MED") + "-" + String(Math.floor(1000 + Math.random() * 9000));
-      inventory.push({ code: code, name: name, type: type, stock: stock, reorder: reorder });
-      $("inv-msg").className = "form-msg ok";
-      $("inv-msg").textContent = name + " added to inventory.";
-    }
-    invEditId = null;
-    $("inv-form").reset();
-    $("inv-stock").value = 0;
-    $("inv-reorder").value = 10;
-    $("inv-submit").textContent = "Add Medication";
-    $("inv-cancel-wrap").style.display = "none";
-    invMsgReset();
-    fillRxMedDropdown();
-    fillPatientDropdowns();
-    renderInventory();
-  });
-  $("inv-cancel").addEventListener("click", () => {
-    invEditId = null;
-    $("inv-form").reset();
-    $("inv-stock").value = 0;
-    $("inv-reorder").value = 10;
-    $("inv-submit").textContent = "Add Medication";
-    $("inv-cancel-wrap").style.display = "none";
-    $("inv-msg").textContent = "";
-  });
-
-  // ---- Summary ----
-  function renderSummary() {
-    const counts = { "Waiting": 0, "In Consultation": 0, "Done": 0 };
-    patients.forEach(p => counts[p.status]++);
-    $("count-waiting").textContent = counts["Waiting"];
-    $("count-consultation").textContent = counts["In Consultation"];
-    $("count-done").textContent = counts["Done"];
-  }
-
-  function renderAll() {
-    renderJourney();
-    renderQueue();
-    renderSummary();
-    if ($("profile-patient").value) renderProfileView();
-  }
-
-  // ---- Staff chip ----
-  const initials = currentStaff.name.split(" ").filter(w => /^[A-Za-z]/.test(w)).slice(0, 2).map(w => w[0].toUpperCase()).join("");
-  $("user-avatar").textContent = initials;
-  $("user-name").textContent = currentStaff.name;
-  $("user-role").textContent = currentStaff.position;
-  $("staff-close").addEventListener("click", () => $("staff-overlay").classList.remove("open"));
-  $("staff-overlay").addEventListener("click", e => { if (e.target === $("staff-overlay")) $("staff-overlay").classList.remove("open"); });
-  $("user-chip").addEventListener("click", () => {
-    const d = $("staff-details");
-    d.innerHTML = "";
-    [["Name", currentStaff.name], ["Position", currentStaff.position], ["Staff ID", currentStaff.staffId],
-     ["Department", currentStaff.department], ["Phone", currentStaff.phone], ["Email", currentStaff.email],
-     ["Joined", currentStaff.joined], ["Shift", currentStaff.shift]].forEach(kv => d.appendChild(detailLine(kv[0], kv[1])));
-    $("staff-overlay").classList.add("open");
-  });
-
-  // ---- Cashier: unified payment ----
-  function suggestedAmount(p) {
-    const rm = SAMPLE_RATES[p.visitType] || 50;
-    return Math.round(rm * 1.4 * 1.06 * 100) / 100;
-  }
-  function renderPaySummary() {
-    const sel = $("pay-patient");
-    const p = patients.find(x => x.id === parseInt(sel.value, 10));
-    const box = $("pay-summary");
-    box.innerHTML = "";
-    $("pay-output").innerHTML = "";
-    $("pay-msg").textContent = "";
-    if (!p) return;
-    const amount = suggestedAmount(p);
-    $("pay-amount").value = amount.toFixed(2);
-    const card = document.createElement("div");
-    card.className = "cashier-doc";
-    card.innerHTML =
-      "<div class='doc-party'><strong>" + p.name + "</strong> · " + p.visitType + " · Status: " + p.status + "<br>" +
-      "<span class='k'>Diagnosis:</span> " + (p.diagnosis || "—") + "<br>" +
-      "<span class='k'>Suggested amount (visit + medication, incl. 6% tax):</span> <strong>RM " + amount.toFixed(2) + "</strong></div>";
-    box.appendChild(card);
-  }
-  $("pay-patient").addEventListener("change", renderPaySummary);
-  $("pay-form").addEventListener("submit", e => {
-    e.preventDefault();
-    const p = patients.find(x => x.id === parseInt($("pay-patient").value, 10));
-    if (!p) { $("pay-msg").textContent = "Select a patient."; return; }
-    const amount = parseFloat($("pay-amount").value);
-    if (isNaN(amount) || amount <= 0) { $("pay-msg").textContent = "Enter a valid payment amount."; return; }
-    const type = $("pay-doc").value;
-    const method = $("pay-method").value;
-    const newStatus = $("pay-status").value || "Paid";
-    $("pay-msg").textContent = "";
-    const out = $("pay-output");
-    out.innerHTML = "";
-    out.appendChild(buildDoc(type, p, method, amount));
-    if (newStatus) {
-      p.status = newStatus;
-      renderAll();
-    }
-    $("pay-msg").className = "form-msg ok";
-    $("pay-msg").textContent = "Payment of RM " + amount.toFixed(2) + " recorded for " + p.name +
-      (newStatus ? " — status updated to " + newStatus + "." : ".");
-  });
-
-  // ---- Cashier documents ----
-  const SAMPLE_RATES = { "General Consultation": 60, "Follow-up": 40, "Medication Refill": 25, "Blood Test": 80, "Vaccination": 95 };
-  function fmtRM(n) { return "RM " + n.toFixed(2); }
-  function docNumber(type) {
-    const prefix = { quotation: "QUO", invoice: "INV", receipt: "RCP" }[type];
-    return "TSV-" + prefix + "-" + new Date().getFullYear() + "-" + String(Math.floor(10000 + Math.random() * 90000));
-  }
-  function buildDoc(type, p, method, customTotal) {
-    const rm = SAMPLE_RATES[p.visitType] || 50;
-    let items = [
-      { desc: p.visitType + " — consultation & procedures", amt: rm },
-      { desc: "Medication & dispensing (sample bundle)", amt: Math.round(rm * 0.4 * 100) / 100 }
-    ];
-    if (customTotal !== undefined && customTotal !== null) {
-      const base = Math.round(customTotal / 1.06 * 100) / 100;
-      const first = Math.round(base * 0.6 * 100) / 100;
-      items = [
-        { desc: p.visitType + " — consultation & procedures", amt: first },
-        { desc: "Medication & dispensing (sample bundle)", amt: Math.round((base - first) * 100) / 100 }
-      ];
-    }
-    const subtotal = items.reduce((s, i) => s + i.amt, 0);
-    const tax = Math.round(subtotal * 0.06 * 100) / 100;
-    const total = Math.round((subtotal + tax) * 100) / 100;
-    const no = docNumber(type);
-    const titles = { quotation: "QUOTATION", invoice: "INVOICE", receipt: "RECEIPT" };
-    const now = new Date().toLocaleString("en-MY", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
-    const wrap = document.createElement("div");
-    wrap.className = "cashier-doc";
-    const head = document.createElement("div");
-    head.className = "doc-head";
-    head.innerHTML =
-      "<div><div class='doc-title'>" + titles[type] + "</div>" +
-      "<div style='font-size:12px;color:var(--muted);'>the savior clinic · sample document</div></div>" +
-      "<div class='doc-meta'>No: <span class='doc-no'>" + no + "</span><br>Date: " + now +
-      (type !== "quotation" ? "<br>Method: " + method : "<br>Valid: 14 days") + "</div>";
-    wrap.appendChild(head);
-    const party = document.createElement("div");
-    party.className = "doc-party";
-    party.innerHTML =
-      "<span class='k'>Patient:</span> <strong>" + p.name + "</strong><br>" +
-      "<span class='k'>Visit:</span> " + p.visitType + " · " + p.status +
-      (p.phone ? " · <span class='k'>Phone:</span> " + p.phone : "") +
-      (p.address ? "<br><span class='k'>Address:</span> " + p.address : "");
-    wrap.appendChild(party);
-    const table = document.createElement("table");
-    table.className = "doc-items";
-    table.innerHTML = "<thead><tr><th>Item</th><th class='num'>Amount</th></tr></thead>";
-    const tbody = document.createElement("tbody");
-    items.forEach(i => {
-      const tr = document.createElement("tr");
-      const tdD = document.createElement("td");
-      tdD.textContent = i.desc;
-      const tdA = document.createElement("td");
-      tdA.className = "num";
-      tdA.textContent = fmtRM(i.amt);
-      tr.append(tdD, tdA);
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    wrap.appendChild(table);
-    const totalRow = document.createElement("div");
-    totalRow.className = "doc-total";
-    totalRow.innerHTML = "<span>Total (incl. 6% service tax):</span><span>" + fmtRM(total) + "</span>";
-    wrap.appendChild(totalRow);
-    const stamp = document.createElement("div");
-    stamp.className = "doc-stamp " + (type === "receipt" ? "paid" : (type === "invoice" ? "unpaid" : ""));
-    if (type === "receipt") stamp.textContent = "PAID";
-    else if (type === "invoice") stamp.textContent = "PAYMENT DUE";
-    else { stamp.textContent = "PRICE ESTIMATE"; stamp.style.background = "var(--light-blue)"; stamp.style.color = "var(--dark-blue-2)"; stamp.style.borderColor = "var(--mid-blue)"; }
-    wrap.appendChild(stamp);
-    const note = document.createElement("div");
-    note.className = "doc-note";
-    note.textContent = "Sample document generated for demonstration — amounts are not real charges.";
-    wrap.appendChild(note);
-    return wrap;
-  }
-  document.querySelectorAll(".doc-form").forEach(f => {
-    f.addEventListener("submit", e => {
-      e.preventDefault();
-      const sel = f.querySelector(".bill-patient");
-      const p = patients.find(x => x.id === parseInt(sel.value, 10));
-      if (!p) return;
-      const type = sel.dataset.doc;
-      const methodEl = f.querySelector(".pay-method");
-      const method = methodEl ? methodEl.value : "Cash";
-      const out = document.querySelector(".doc-output[data-out='" + type + "']");
-      out.innerHTML = "";
-      out.appendChild(buildDoc(type, p, method));
-    });
-  });
-
-  // ---- Init ----
-  buildMenu();
-  fillPatientDropdowns();
-  fillJourneyDropdowns();
-  fillRxMedDropdown();
-  renderRxDraft();
-  renderAll();
-  showView("view-patient");
-  $("today-date").textContent =
-    new Date().toLocaleDateString("en-MY", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-  $("footer-date").textContent = "Today: " +
-    new Date().toLocaleDateString("en-MY", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  $("footer-year").textContent = new Date().getFullYear();
+  document.getElementById("yr").textContent = new Date().getFullYear();
 </script>
 </body>
 </html>

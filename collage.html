@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>clinicKU square collage</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { width:1080px; height:1080px; font-family:"Montserrat",Arial,sans-serif; overflow:hidden; }
+  .canvas {
+    width:1080px; height:1080px; position:relative;
+    background:linear-gradient(135deg,#f2f5ff 0%, #e6ebff 50%, #dfe6ff 100%);
+    padding:34px 40px;
+  }
+  .head { display:flex; align-items:center; gap:14px; }
+  .mark { width:44px; height:44px; border-radius:13px; background:linear-gradient(135deg,#0000FF,#4d4dff); display:flex; align-items:center; justify-content:center; box-shadow:0 5px 14px rgba(0,0,255,0.32); }
+  .mark svg { width:24px; height:24px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+  .brand { font-family:"Playfair Display",Georgia,serif; font-size:34px; font-weight:800; letter-spacing:4px; color:#3a3f47; }
+  .brand span { color:#0000FF; }
+  .head .sub { margin-left:auto; text-align:right; font-size:13px; font-weight:600; color:#5a6270; }
+  .head .sub b { color:#0000FF; }
+  .slogan { margin-top:8px; font-size:19px; font-weight:800; color:#3a3f47; }
+  .slogan em { font-style:normal; color:#0000FF; }
+
+  .grid { margin-top:18px; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .shot {
+    background:#fff; border-radius:16px; overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,255,0.14);
+    border:1px solid #e3e8f2;
+  }
+  .shot img { width:100%; height:322px; object-fit:cover; object-position:top; display:block; }
+  .caption {
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px; background:#fff;
+    border-top:1px solid #eef1f6;
+  }
+  .cap-ico {
+    width:34px; height:34px; flex:none; border-radius:10px; background:#e6ebff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cap-ico svg { width:17px; height:17px; fill:none; stroke:#0000FF; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .cap-t { font-size:14.5px; font-weight:700; color:#3a3f47; }
+  .cap-d { font-size:11.5px; color:#6b7280; line-height:1.35; }
+  .cap-badge {
+    margin-left:auto; flex:none;
+    background:#0000FF; color:#fff; font-size:10.5px; font-weight:700;
+    padding:4px 10px; border-radius:999px; letter-spacing:0.5px;
+  }
+
+  .bottom {
+    margin-top:18px;
+    background:#0000FF; border-radius:14px; padding:13px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    color:#fff; box-shadow:0 8px 22px rgba(0,0,255,0.32);
+  }
+  .bottom .l { font-size:15px; font-weight:700; display:flex; align-items:center; gap:9px; }
+  .bottom .l svg { width:16px; height:16px; fill:none; stroke:#fff; stroke-width:2.6; }
+  .bottom .r { font-size:12px; opacity:0.92; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="head">
+    <div class="mark"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+    <div class="brand">CLINIC<span>KU</span></div>
+    <div class="sub">by <b>The Savior Malaysia</b><br>one page · any browser · zero install</div>
+  </div>
+  <div class="slogan">4 killer features, <em>one dashboard.</em></div>
+
+  <div class="grid">
+    <div class="shot">
+      <img src="shot-patient.png" alt="Patient">
+      <div class="caption">
+        <div class="cap-ico"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M2 21c0-4 3.5-6.5 8-6.5 2 0 3.8.5 5.2 1.4"/><path d="M19 8v6M16 11h6"/></svg></div>
+        <div><div class="cap-t">Patient Management</div><div class="cap-d">Register, queue, Call &amp; WhatsApp, full CRUD</div></div>
+        <div class="cap-badge">FRONT DESK</div>
+      </div>
+    </div>
+    <div class="shot">
+      <img src="shot-doctor.png" alt="Doctor">
+      <div class="caption">
+        <div class="cap-ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-0.5-7-3.5-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div><div class="cap-t">Doctor &amp; MC Generation</div><div class="cap-d">Diagnosis, prescriptions, medical certificate in one page</div></div>
+        <div class="cap-badge">DOCTOR</div>
+      </div>
+    </div>
+    <div class="shot">
+      <img src="shot-pharmacy.png" alt="Pharmacy">
+      <div class="caption">
+        <div class="cap-ico"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><path d="M12 11v6M9 14h6"/></svg></div>
+        <div><div class="cap-t">QR Dispensing + Stock</div><div class="cap-d">Scan-verified meds, auto stock deduction &amp; alerts</div></div>
+        <div class="cap-badge">PHARMACY</div>
+      </div>
+    </div>
+    <div class="shot">
+      <img src="shot-cashier.png" alt="Cashier">
+      <div class="caption">
+        <div class="cap-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 14h4"/></svg></div>
+        <div><div class="cap-t">Cashier &amp; Billing</div><div class="cap-d">Quotation / invoice / receipt, ✓ Paid status auto-update</div></div>
+        <div class="cap-badge">CASHIER</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="l"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Try the free demo — instant, no signup</div>
+    <div class="r">www.thesaviorofficial.com</div>
+  </div>
+</div>
+</body>
+</html>
