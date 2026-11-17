@@ -464,6 +464,43 @@
   }
   .ghost-btn:hover { background: var(--light-blue); }
 
+  /* Card-based queue rows */
+  .queue-list { display: flex; flex-direction: column; gap: 12px; }
+  .q-row {
+    background: #fff;
+    border: 1px solid #eef1f6;
+    border-radius: 16px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,255,0.06);
+    position: relative;
+  }
+  .q-row::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 10px; bottom: 10px;
+    width: 4px;
+    border-radius: 0 4px 4px 0;
+    background: #c9d5ec;
+  }
+  .q-row.status-waiting::before { background: var(--amber); }
+  .q-row.status-consultation::before { background: var(--mid-blue); }
+  .q-row.status-done::before { background: var(--green); }
+  .q-row.status-paid::before { background: #0000FF; }
+  .q-main { flex: 1; min-width: 0; }
+  .q-name { font-weight: 700; color: #3a3f47; font-size: 15px; cursor: pointer; }
+  .q-name:hover { color: #0000FF; }
+  .q-addr { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .q-status { margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; }
+  .q-side { flex: none; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+  .q-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .visit-badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 700; background: var(--soft); color: #0000CC;
+  }
+
   /* Patient journey tracker */
   .journey {
     background: var(--white);
@@ -613,15 +650,15 @@
     <div class="form-msg" id="form-msg"></div>
 
     <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);margin:18px 0 10px;">Today&rsquo;s Queue</h4>
-    <table>
-      <thead><tr><th>No.</th><th>Patient</th><th>Visit Type</th><th>Consultation Room</th><th>Status</th><th>Contact Patient</th><th>Actions</th></tr></thead>
-      <tbody id="queue-body"></tbody>
-    </table>
+    <div id="queue-body" class="queue-list"></div>
 
     <h4 style="font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mid-blue);margin:18px 0 10px;">Patient Profile</h4>
     <div class="field">
       <label for="profile-patient">Select Patient</label>
       <select id="profile-patient" style="min-width:260px;"></select>
+    </div>
+    <div class="journey" style="margin-top:14px;">
+      <div class="j-steps" id="profile-journey"></div>
     </div>
     <div id="profile-view"></div>
   </section>
@@ -1217,63 +1254,53 @@
 
   // ---- Queue ----
   function renderQueue() {
-    const queueBody = $("queue-body");
-    queueBody.innerHTML = "";
+    const list = $("queue-body");
+    list.innerHTML = "";
     patients.forEach((p, i) => {
-      const tr = document.createElement("tr");
-      tr.className = statusClass(p.status);
-      const tdNo = document.createElement("td");
-      tdNo.textContent = String(i + 1).padStart(2, "0");
-      const tdName = document.createElement("td");
-      tdName.className = "name-cell";
-      const nameDiv = document.createElement("div");
-      nameDiv.className = "p-name";
-      nameDiv.textContent = p.name;
-      nameDiv.addEventListener("click", () => {
+      const row = document.createElement("div");
+      row.className = "q-row " + statusClass(p.status);
+
+      // Left block: name, address, status
+      const main = document.createElement("div");
+      main.className = "q-main";
+      const name = document.createElement("div");
+      name.className = "q-name";
+      name.textContent = String(i + 1).padStart(2, "0") + ". " + p.name;
+      name.addEventListener("click", () => {
         $("profile-patient").value = p.id;
         renderProfileView();
+        renderProfileJourney();
         $("profile-patient").scrollIntoView({ behavior: "smooth", block: "center" });
       });
-      tdName.appendChild(nameDiv);
-      if (p.phone) {
-        const c = document.createElement("div");
-        c.className = "contact-line";
-        c.textContent = p.phone;
-        tdName.appendChild(c);
-      }
-      if (p.address) {
-        const a = document.createElement("div");
-        a.className = "contact-line";
-        a.textContent = p.address;
-        tdName.appendChild(a);
-      }
-      const medTag = document.createElement("span");
-      medTag.className = "med-tag " + (p.medications.length === 0 ? "none" : (p.medications.every(m => m.dispensed) ? "dispensed" : "pending"));
-      medTag.textContent = p.medications.length === 0 ? "No medication"
-        : (p.medications.every(m => m.dispensed) ? "Medication dispensed" : "Medication pending");
-      tdName.appendChild(medTag);
-
-      const tdType = document.createElement("td");
-      const badge = document.createElement("span");
-      badge.className = "badge";
-      badge.textContent = p.visitType;
-      tdType.appendChild(badge);
-
-      const tdRoom = document.createElement("td");
-      tdRoom.appendChild(makeSelect(ROOMS, p.room, "Consultation room for " + p.name, v => { p.room = v; }, "room"));
-      const tdStatus = document.createElement("td");
+      main.appendChild(name);
+      const addrLine = document.createElement("div");
+      addrLine.className = "q-addr";
+      addrLine.textContent = [p.phone, p.address].filter(Boolean).join(" \u00b7 ") || "\u2014";
+      main.appendChild(addrLine);
+      const statusWrap = document.createElement("div");
+      statusWrap.className = "q-status";
       if (p.status === "Paid") {
         const paidTag = document.createElement("span");
         paidTag.className = "paid-tag";
         paidTag.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Paid';
-        tdStatus.appendChild(paidTag);
+        statusWrap.appendChild(paidTag);
       } else {
-        tdStatus.appendChild(makeSelect(STATUS_OPTIONS, p.status, "Status for " + p.name, v => { p.status = v; renderAll(); }, "status"));
+        statusWrap.appendChild(makeSelect(STATUS_OPTIONS, p.status, "Status for " + p.name, v => { p.status = v; renderAll(); }, "status"));
       }
+      const vBadge = document.createElement("span");
+      vBadge.className = "visit-badge";
+      vBadge.textContent = p.visitType;
+      statusWrap.appendChild(vBadge);
 
-      const tdActions = document.createElement("td");
-      const wrap = document.createElement("div");
-      wrap.className = "actions";
+      // Right block: room dropdown + all buttons
+      const side = document.createElement("div");
+      side.className = "q-side";
+      const roomWrap = document.createElement("div");
+      roomWrap.className = "q-actions";
+      roomWrap.appendChild(makeSelect(ROOMS, p.room, "Consultation room for " + p.name, v => { p.room = v; }, "room"));
+      side.appendChild(roomWrap);
+      const actions = document.createElement("div");
+      actions.className = "q-actions";
       const editBtn = document.createElement("button");
       editBtn.type = "button";
       editBtn.className = "act-btn edit-btn";
@@ -1289,10 +1316,11 @@
         if (confirm("Delete " + p.name + " from today's queue?")) {
           patients = patients.filter(x => x.id !== p.id);
           fillPatientDropdowns();
+          renderJourney();
           renderAll();
         }
       });
-      wrap.append(editBtn, delBtn);
+      actions.append(editBtn, delBtn);
       if (p.phone) {
         const call = document.createElement("a");
         call.className = "act-btn call-btn";
@@ -1305,11 +1333,12 @@
         wa.target = "_blank";
         wa.rel = "noopener";
         wa.textContent = "WhatsApp";
-        wrap.append(call, wa);
+        actions.append(call, wa);
       }
-      tdActions.appendChild(wrap);
-      tr.append(tdNo, tdName, tdType, tdRoom, tdStatus, tdActions);
-      queueBody.appendChild(tr);
+      side.appendChild(actions);
+
+      row.append(main, side);
+      list.appendChild(row);
     });
   }
 
@@ -1417,7 +1446,26 @@
       });
     });
   }
-  $("profile-patient").addEventListener("change", renderProfileView);
+  $("profile-patient").addEventListener("change", () => { renderProfileView(); renderProfileJourney(); });
+
+  function renderProfileJourney() {
+    const sel = $("profile-patient");
+    const p = patients.find(x => x.id === parseInt(sel.value, 10));
+    const box = $("profile-journey");
+    if (!p) { box.innerHTML = ""; return; }
+    const st = journeyState(p);
+    box.innerHTML = "";
+    JOURNEY_STEPS.forEach((s, i) => {
+      const step = document.createElement("div");
+      step.className = "j-step" + (i <= st.done ? " done" : "") + (i === st.active && st.active !== -1 ? " active" : "");
+      const stateText = i <= st.done ? (st.active === -1 ? "Complete" : "Fulfilled") : (i === st.active ? "Next step" : "Pending");
+      step.innerHTML =
+        '<div class="j-dot">' + s.icon + "</div>" +
+        '<div class="j-label">' + s.label + "</div>" +
+        '<div class="j-state">' + stateText + "</div>";
+      box.appendChild(step);
+    });
+  }
 
   // ---- Doctor: shared patient selector loads all fields ----
   function doctorPatient() {
@@ -1818,6 +1866,7 @@
   function renderAll() {
     renderJourney();
     renderQueue();
+    if ($("profile-patient").value) renderProfileJourney();
     renderSummary();
     if ($("profile-patient").value) renderProfileView();
   }
