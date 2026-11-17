@@ -396,6 +396,37 @@
   .doc-stamp.paid { background: #e2f4ea; color: var(--green); border: 1.5px solid var(--green); }
   .doc-stamp.unpaid { background: #fdeee0; color: var(--amber); border: 1.5px solid var(--amber); }
   .doc-note { font-size: 11px; color: var(--muted); margin-top: 10px; }
+  .doc-print-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+  .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--white);
+    color: #0000FF;
+    border: 2px solid #0000FF;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .print-btn:hover { background: var(--soft); }
+  .print-btn svg { width: 15px; height: 15px; fill: none; stroke: #0000FF; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  @media print {
+    body * { visibility: hidden !important; }
+    .cashier-doc, .cashier-doc * { visibility: visible !important; }
+    .cashier-doc {
+      position: absolute !important;
+      left: 0; top: 0;
+      width: 100%;
+      box-shadow: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+    }
+    .doc-print-row { display: none !important; }
+  }
   .mc-sign { margin-top: 14px; font-size: 13px; color: var(--dark-blue); }
   .mc-sign .sig-line { border-bottom: 1.5px solid var(--dark-blue); display: inline-block; min-width: 220px; padding-bottom: 2px; margin-bottom: 4px; }
 
@@ -1589,6 +1620,7 @@
       "<div class='mc-sign'><div class='sig-line'>" + currentStaff.name + "</div>" +
       currentStaff.position + " · " + currentStaff.staffId + "<br>" +
       "<span style='color:var(--muted);font-size:11px;'>Sample certificate for demonstration — not a valid medical document.</span></div>";
+    addPrintButton(doc);
     out.appendChild(doc);
   });
 
@@ -1887,6 +1919,24 @@
     $("staff-overlay").classList.add("open");
   });
 
+  // ---- Document printing ----
+  function addPrintButton(docEl) {
+    const row = document.createElement("div");
+    row.className = "doc-print-row";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "print-btn";
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print Document';
+    btn.setAttribute("aria-label", "Print this document");
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".cashier-doc.printing").forEach(x => x.classList.remove("printing"));
+      docEl.classList.add("printing");
+      window.print();
+    });
+    row.appendChild(btn);
+    docEl.appendChild(row);
+  }
+
   // ---- Cashier: unified payment ----
   function suggestedAmount(p) {
     const rm = SAMPLE_RATES[p.visitType] || 50;
@@ -1923,7 +1973,9 @@
     $("pay-msg").textContent = "";
     const out = $("pay-output");
     out.innerHTML = "";
-    out.appendChild(buildDoc(type, p, method, amount));
+    const doc = buildDoc(type, p, method, amount);
+    addPrintButton(doc);
+    out.appendChild(doc);
     if (newStatus) {
       p.status = newStatus;
       renderAll();
@@ -2021,7 +2073,9 @@
       const method = methodEl ? methodEl.value : "Cash";
       const out = document.querySelector(".doc-output[data-out='" + type + "']");
       out.innerHTML = "";
-      out.appendChild(buildDoc(type, p, method));
+      const doc = buildDoc(type, p, method);
+      addPrintButton(doc);
+      out.appendChild(doc);
     });
   });
 
